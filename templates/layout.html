@@ -69,9 +69,12 @@
                             <a class="nav-link  {{ active_account }}" href="{{ url_for('users.accountIndividual') }}">Account</a>
                         </li>
                     {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link  {{ active_post }}" href="{{ url_for('posts.newPost') }}">New Post</a>
-                </li>
+                    
+                    {% if  current_user.can(Permission.WRITE)%}
+                        <li class="nav-item">
+                            <a class="nav-link  {{ active_post }}" href="{{ url_for('posts.newPost') }}">New Post</a>
+                        </li>
+                    {% endif %}
                 <li class="nav-item">
                     <a class="nav-link btn {{ active_logout }}" data-toggle="modal" data-target="#logoutModal">Logout</a>
                 </li>

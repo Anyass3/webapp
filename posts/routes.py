@@ -5,6 +5,7 @@ from webapp.posts.forms import PostForm
 from webapp.models import User, Role, Post, Permission
 from flask_login import current_user, login_required
 from webapp.utils import save_pic
+from webapp.decorators import permission_required
 
 posts = Blueprint('posts', __name__)
 
@@ -17,6 +18,7 @@ def inject_permissions():
 ##################################POSTS#################################
 @posts.route('/post/new', methods=['POST','GET'])
 @login_required
+@permission_required(Permission.WRITE)
 def newPost():
     form = PostForm()
     if form.validate_on_submit():
