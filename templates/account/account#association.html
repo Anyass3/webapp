@@ -1,0 +1,61 @@
+{% extends "account/account_layout.html" %}
+
+{% block account_form %}
+  <div class="col  mt-2">
+    {{ form.username.label(class="form-control-label") }}
+    {% if form.username.errors %}
+      {{ form.username(class='form-control form-control-lg is-invalid') }}
+      <div class="invalid-feedback">
+        {% for error in form.username.errors %}
+          <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% else %}
+        {{ form.username(class="form-control form-control-lg ") }}
+    {% endif %}
+  </div>
+
+  <div class="col  mt-2">
+    {{ form.or_name.label(class="form-control-label") }}
+    {% if form.or_name.errors %}
+      {{ form.or_name(class='form-control form-control-lg is-invalid') }}
+      <div class="invalid-feedback">
+        {% for error in form.or_name.errors %}
+          <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% else %}
+        {{ form.or_name(class="form-control form-control-lg ") }}
+    {% endif %}
+  </div>
+
+  <div class="col  mt-2">
+    {{ form.shorten.label(class="form-control-label", placeholder="") }}
+    {% if form.shorten.errors %}
+      {{ form.shorten(class='form-control form-control-lg is-invalid') }}
+      <div class="invalid-feedback">
+        {% for error in form.shorten.errors %}
+          <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% else %}
+        {{ form.shorten(class="form-control form-control-lg text-uppercase") }}
+    {% endif %}
+  </div>
+
+  <div class="col  mt-2">
+    {{ form.pic.label() }}
+    {{ form.pic(class="form-control-file") }}
+
+    {% if form.pic.errors %}
+      {% for error in form.pic.errors %}
+        <span class="text-danger">{{ error }}</span><br>
+      {% endfor %}
+    {% endif %}
+  </div>
+  
+  <div class="col  mt-2">
+    {{ form.submit(class="btn btn-outline-info") }}
+  </div>
+
+{% endblock account_form %}

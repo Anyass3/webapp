@@ -1,0 +1,28 @@
+
+Dear {{ user.trole}}, 
+
+Welcome to WebsiteName!
+
+{% if code %}
+
+    To register or sign up for an account, please take the following code below:
+
+    {{ code }}
+
+{% else %}
+
+    To {{do}} your {{what}} please click on the following link:
+
+    {{ url_for ('users.change_email', token=token, _external=True) }}
+
+{% endif %}
+
+{% if info %}
+    {{ info }}
+{% endif %}
+    
+Sincerely,
+
+WebsiteName
+
+NOTE: Replies to this email address are not monitored.

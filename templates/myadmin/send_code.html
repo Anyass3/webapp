@@ -1,0 +1,20 @@
+{% extends "reset/reset_layout.html" %}
+
+{% block resetContent %}
+<div class="form-group">
+    {{ form.email.label(class="form-control-label") }}
+    {% if form.email.errors %}
+    {{ form.email(class='form-control form-control-lg is-invalid text-lowercase') }}
+    <div class="invalid-feedback">
+    {% for error in form.email.errors %}
+        <span>{{ error }}</span>
+    {% endfor %}
+    </div>
+    {% else %}
+        {{ form.email(class="form-control form-control-lg text-lowercase") }}
+    {% endif %}
+</div>
+<div class="form-group" style="float: right;">
+    {{ form.submit(class="btn btn-outline-info") }}
+</div>
+{% endblock resetContent %}

@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="my-5 w-100 h-100">
+<div class="contianer m-auto col-md-5 col-lg-4 card">
+    {% if heading %}
+    <h1 class="m-3 w-100 lead w3-center" style="font-size: 110%;">{{ heading }}</h1>
+    {% else %}
+    <h1 class="m-3 w-100 lead w3-center" style="font-size: 110%;">Account Recovery</h1>
+    {% endif %}
+    <form novalidate method="POST" class=" w3-mobile m-auto py-md-3 container card row">
+        {{ form.csrf_token }}
+        {% block resetContent %}{% endblock resetContent %}
+    </form>
+</div>
+</div>
+{% endblock content %}

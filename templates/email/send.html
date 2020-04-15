@@ -1,0 +1,24 @@
+{% extends 'email/e_layout.html' %}
+
+{% block email %}
+
+    <h3> Dear {{ user.trole}}, </h3>
+    <h4 style="text-align: center;"> Welcome to WebsiteName! </h4>
+
+    {% if code %}
+        <p>To register or sign up for an account, please take the following code below:</p>
+        <p><small style="color: blueviolet;">{{ code }}</small></p>
+    {% else %}
+        <p>To {{do}} your {{what}} please click on the following link:</p>
+        <p><a href="{{ url_for ('users.change_email', token=token, _external=True) }}">Click Me</a></p>
+    {% endif %}
+
+    {% if info %}
+        <p>{{ info }}</p>
+    {% endif %}
+        
+    <p>Sincerely,</p>
+    <p>WebsiteName</p>
+    <p>NOTE: replies to this email address are not monitored.</p>
+
+{% endblock email %}

@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<style type="text/css" >
+    
+  </style>
+{% endblock style %}
+
+{% block content %}
+
+  <div class="jumbotron jumbotron-fluid">
+    <div class="w3-container row ">
+      <div class="nav nav-tabs flex-md-column w3-center flex-sm-row s12 col-md-3 col-lg-2">
+        <a class="nav-link  {{ active_A }} " href="{{ url_for('users.register') }}">Association</a>
+        <a class="nav-link {{ active_S }} " href="{{ url_for('users.registerScholar') }}">Scholar</a>
+        <a class="nav-link {{ active_I }}" href="{{ url_for('users.registerIndividual') }}">Individual</a>
+      </div>
+      <div class="w3-card-2 s12 col-md-8 col-lg-9">
+        
+          <!-- Scholar's Account Ends-->
+          
+          <!-- Association Account -->
+          {% block registerContent %} {% endblock registerContent %}
+          
+          <!-- Association Account Ends -->
+
+          <!-- Individual account -->
+        
+      </div>
+      
+      <div class="border-top pt-3">
+        <small class="text-muted">
+          Already Have An Account? <a href="{{ url_for('users.login') }}" class="ml-2">sign in</a>
+        </small>
+      </div>
+
+    </div>
+  </div>
+    
+{% endblock content %}

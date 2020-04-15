@@ -1,0 +1,13 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+
+{% if not current_user.is_authenticated or current_user.has_role('Admin') %}
+  <h1>Forbidden page</h1>
+{% else %}
+
+<h1>DashB</h1>
+
+{% endif %}
+
+{% endblock %}

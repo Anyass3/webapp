@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<style type="text/css" >
+    
+  </style>
+{% endblock style %}
+
+
+{% block content %}
+
+<div class="card text-center">
+    <div class="card-header">
+      {{ 'Salam {}'.format(current_user.username) }}
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Please Confirm Your Account</h5>
+      <p class="card-text">If the confirmation email sent to you was has expired. You can request a new email confirmation just by clicking the link below</p>
+      <a href="{{ url_for('users.new_confirm') }}" class="btn btn-primary">Request Confirmation</a>
+    </div>
+  </div>
+
+{% endblock content %}

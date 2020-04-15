@@ -1,0 +1,192 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<style type="text/css" >
+    
+  </style>
+{% endblock style %}
+
+{% block content %}
+        <!--  slides starts -->
+    <div id="myslides" class="carousel slide m-auto" style="width: 95%;" data-ride="carousel">
+      <ul class="carousel-indicators">
+        <li data-target="#myslides" data-slide-to="0" class="active"></li>
+        <li data-target="#myslides" data-slide-to="1"></li>
+        <li data-target="#myslides" data-slide-to="2"></li>
+      </ul>
+      <div class="carousel-inner">
+          <div class="carousel-item active">
+              <img class="d-block w-100 h-75" src="../static/img/p4.jpg" alt="first slide">
+              <div class="carousel-caption w3-center">
+                  <h4 class="display-4 small lead text-center">No one has the right to be worshipped except Allah</h4>
+                  
+                    <button type="button" id="button" class="btn btn-danger my-2 my-sm-0 d-none d-md-block" ><a href="{{ url_for('users.login') }}" class="lead">login</a></button>
+                  <form class="input-group">
+                    
+                      <input type="text" name="ask" class="form-control w-sm-50 mr-sm-2" required placeholder="Ask">
+                      <span class="input-group-btn">
+                      <button class="btn btn-outline-success lead my-2 my-sm-0" type="submit">@ask</button>
+                      </span>
+                  </form>
+
+              </div>
+          </div>
+          <div class="carousel-item">
+              <img class="d-block w-100 h-75" src="../static/img/p2.jpg" alt="second slide">
+          </div>
+          <div class="carousel-item">
+              <img class="d-block w-100 h-75" src="../static/img/p3.jpg" alt="third slide">
+          </div>
+      </div>
+
+    </div>
+    <!--  slides ends  -->
+    <!--** Events **-->
+    <nav class="nav justify-content-center nav-pills nav-justified nav-fill mt-3 flex-column flex-md-row">
+      <a class="nav-link" href="#latest" data-toggle="tab">Latest</a>
+      <a class="nav-link active" href="#upComing" data-toggle="tab">UpComing</a>
+    </nav>
+    
+    <div class="container tab-content py-5">
+        <div id='upComing' class="tab-pane active w3-animate-opacity ">
+            <div class="w3-third">
+              <div class="reduce w3-center">
+                <h4>The Heart</h4>
+                <img id="image" class="image-fluid figure-img" src="../static/img/heart.png" alt="image">
+                <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
+                </p>
+              </div>
+            </div>
+            <div class="w3-third">
+              <div class="reduce w3-center">
+                <h4>The Awareness</h4>
+                <img id="image" class="image-fluid figure-img" src="../static/img/charity.jpg" alt="image">
+                <p class="lead">consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit ani
+              </div>
+            </div>
+            <div class="w3-third">
+              <div class="reduce w3-center">
+                <h4>The Charity</h4>
+                <img id="image" class="image-fluid figure-img" src="../static/img/charity.jpg" alt="image">
+                <p class="lead">consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              </div>
+            </div>
+        </div>
+        <div id='latest' class="tab-pane w3-card w3-animate-opacity">
+            <div class="w3-third">
+              <div class="reduce w3-center">
+                <h4>The Prophet</h4>
+                <img id="image" class="image-fluid figure-img" src="../static/img/prophet.jpg" alt="image">
+                <p class="lead">consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              </div>
+            </div>
+            <div class="w3-third">
+              <div class="reduce w3-center">
+                <h4>The Ceiling</h4>
+                <img id="image" class="image-fluid figure-img" src="../static/img/ppp4.png" alt="image">
+                <p class="lead">consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia olor in deserunt mollit anim id est laborum.</p>
+              </div>
+            </div>
+            <div class="w3-third">
+              <div class="reduce w3-center">w3-third
+                <h4>The Muslims</h4>
+                <img id="image" class="image-fluid figure-img" src="../static/img/muslims.jpg" alt="image">
+                <p class="lead">consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
+                cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
+                proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+              </div>
+            </div>
+        </div>
+    </div>
+    <!--** Events ends**-->
+      <div class="container" >
+          <h1 class="display-5 w3-center">Posts</h1>
+          <div id="posts">
+          <div class="row">
+            {% for post in posts.items %}
+            <div class="col-sm-6 card " >
+                <div class="row">
+                  <p>
+                    <a class="" href="{{ url_for('posts.userPosts', username=post.author.username) }}">
+                        <img class="w3-circle " style="width:10%;" src="{{ url_for('static', filename='img/' + post.author.image_file) }}" alt="profile">
+                        <span class="lead">{{ post.author.username }}</span>
+                    </a>
+                  <small>{{ moment(post.date_posted).fromNow(refresh=True) }}</small>
+                  </p>
+                </div>
+                <div class="text-center">
+                  <h4 class="text-capitalize"><a href="{{ url_for('posts.VPost', post_id=post.id) }}">{{ post.title }}</a></h4>
+                  {% if post.img_file %}
+                  <img id="image" style="width:80%;" class="image-fluid figure-img w3-display-container w3-hover-opacity" src="{{ url_for('static', filename='img/' + post.img_file )}}" alt="image">
+                  {% endif %}
+                  <p class="lead">{{ post.content }}</p>
+                </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+          <div>
+            {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+
+              {% if page_num %}
+
+                {% if posts.page == page_num %}
+                  <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}#posts">{{ page_num }}</a>
+                {% else %}
+                  <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}#posts">{{ page_num }}</a>
+                {% endif %}
+
+              {% else %}
+              ...
+              {% endif %}
+
+            {% endfor %}
+          </div>
+      </div>
+    
+    <div class="container">
+      <h1 class="display-5 w3-center"></h1>
+    </div>
+    <!--** Lectures **-->
+    <div class="container">
+      <nav class="nav nav-tabs nav-fill justify-content-center flex-column flex-md-row">
+        <a class="nav-link" href="#audio" data-toggle="tab">Audios</a>
+        <a class="nav-link active" href="#video" data-toggle="tab">Videos</a>
+      </nav>
+      <div class="tab-content">
+          <div id="audio" class="tab-pane w3-center w3-card-2 py-5">
+              <audio controls src="../static/mp3/01.mp3">media 1</audio>
+              <audio controls src="../static/mp3/02.mp3">media 2</audio>
+              <audio controls src="../static/mp3/03.mp3">media 3</audio>
+              <audio controls src="../static/mp3/04.mp3">media 4</audio>
+              <audio controls src="../static/mp3/05.mp3">media 5</audio>
+              <audio controls src="../static/mp3/06.mp3">media 6</audio>
+              <audio controls src="../static/mp3/07.mp3">media 7</audio>
+              <audio controls src="../static/mp3/08.mp3">media 8</audio>
+              <audio controls src="../static/mp3/09.mp3">media 9</audio>
+              <audio controls src="../static/mp3/10.mp3">media 10</audio>
+              <audio controls src="../static/mp3/11.mp3">media 11</audio>
+              <audio controls src="../static/mp3/12.mp3">media 12</audio>
+          </div>
+          <div id="video" class="tab-pane w3-center w3-card-2 py-2 active container row">
+                  <video controls class="vid col-sm-12 col-md-4 col-lg-3" src="../static/vid/vid.mp4"></video>
+                  <video controls class="vid col-sm-12 col-md-4 col-lg-3" src="../static/vid/vid0.mp4"></video>
+                  <video controls class="vid col-sm-12 col-md-4 col-lg-3" src="../static/vid/vid1.mp4"></video>
+                  <video controls class="vid col-sm-12 col-md-4 col-lg-3" src="../static/vid/vid2.mp4"></video>
+                  <video controls class="vid col-sm-12 col-md-4 col-lg-3" src="../static/vid/vid3.mp4"></video>
+                  <video controls class="vid col-sm-12 col-md-4 col-lg-3" src="../static/vid/vid5.mp4"></video>
+          </div>
+      </div> 
+    </div>
+    <!--** Lectures end**-->
+{% endblock content %}

@@ -1,0 +1,68 @@
+{% extends "myadmin/layout.html" %}
+
+{% block myadmin %}
+<div class="w3-animate-opacity container card w-25 m-auto" id="">
+    <h2 class="w3-center">Edit User Details</h2>
+    <form novalidate class="" method="POST" action="">
+      {{ form.hidden_tag() }}
+      <div class="flex-inline-display form-group">
+        <div class="mt-2 ">
+            {{ form.username.label(class="form-control-label") }}
+            {% if form.username.errors %}
+            {{ form.username(class='form-control form-control-lg is-invalid') }}
+            <div class="invalid-feedback">
+                {% for error in form.username.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+                {{ form.username(class="form-control form-control-lg ") }}
+            {% endif %}
+        </div>
+
+
+        <div class="mt-2 ">
+            {{ form.email.label(class="form-control-label") }}
+            {% if form.email.errors %}
+            {{ form.email(class='form-control form-control-lg is-invalid') }}
+            <div class="invalid-feedback">
+                {% for error in form.email.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+                {{ form.email(class="form-control form-control-lg ") }}
+            {% endif %}
+        </div>
+
+        <div class="mt-2 ">
+            {{ form.role.label(class="form-control-label") }}
+            {% if form.role.errors %}
+            {{ form.role(class='form-control form-control-lg is-invalid') }}
+            <div class="invalid-feedback">
+                {% for error in form.role.errors %}
+                <span>{{ error }}</span>
+                {% endfor %}
+            </div>
+            {% else %}
+                {{ form.role(class="form-control form-control-lg ") }}
+            {% endif %}
+        </div>
+        <div class="form-check my-3">
+          {{ form.confirmed(class="form-check-input") }}
+          {{ form.confirmed.label(class="form-check-label") }}
+        </div>
+        
+        <div class="form-check my-3">
+          {{ form.active(class="form-check-input") }}
+          {{ form.active.label(class="form-check-label") }}
+        </div>
+
+        <div class="mt-2  mt-2 float-right">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+        </div>
+    </form>
+
+</div>
+{% endblock myadmin %}

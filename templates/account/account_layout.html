@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<style type="text/css" >
+    
+  </style>
+{% endblock style %}
+
+
+{% block content %}
+  <div class="w3-card container">
+    <div class="container row m-auto">
+      <div class="col">
+        <img class="w3-circle w3-card m-auto" src="{{ image_file }}" alt="{{ current_user.image_file }}">
+      </div>
+      <div class="col-md-auto col-sm">
+        {% if current_user.has_role('Scholar') %}
+          <p class="lead">{{ current_user.username }}</p>
+          {% elif current_user.has_role('Association') %}
+          <p class="lead">{{ current_user.or_name + '(' + current_user.shorten + ')'}}</p>
+          {% elif current_user.has_role('admin') %}
+          <p class="lead">{{ current_user.username}}</p>
+          <p><a href="{{ url_for('myadmin.all') }}">User Accounts</a></p>
+          <p><a href="{{ url_for('myadmin.add_admin') }}">Add a New Admin</a></p>
+          <p><a href="{{ url_for('myadmin.register_code', user_role='Scholar') }}">Send code to Scholar</a></p>
+          <p><a href="{{ url_for('myadmin.register_code', user_role='Association') }}">Send code to Association</a></p>
+          {% else %}
+          <p class="lead">{{ current_user.username }}</p>
+        {% endif %}
+        <p class="display-6">{{ current_user.email }}</p>
+        <p><small class="lead"><a href="{{ url_for('users.request_change_email') }}">Change Email</a></small></p></p>
+        <p><small class="lead"></small><a class="lead" href="{{ url_for('posts.userPosts', username=current_user.username) }}">My Posts</a></small></p></p>
+      </div>
+    </div>
+  </div>
+          <!-- Update Association Account -->
+  <div class="w3-animate-opacity container card " id="">
+    <h2 class="w3-center">Account Details</h2>
+    <small class="muted">You can easily edit the account details here...then click update</small>
+    <form novalidate class="m-50" method="POST" action="" enctype="multipart/form-data">
+      {{ form.hidden_tag() }}
+      <div class="flex-inline-display form-group">
+
+        {% block account_form %}{% endblock account_form %}
+
+      </div>
+    </form>
+  
+  </div>
+
+        
+        <!--  Account Ends -->
+
+
+
+{% endblock content %}

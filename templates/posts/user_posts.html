@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<style type="text/css" >
+    
+  </style>
+{% endblock style %}
+
+
+{% block content %}
+
+<!--** Events ends**-->
+<div class="container" style="width:60%;" id="posts" style="background-color:gainsboro; ">
+    {% if current_user.has_role('Scholar') %}
+        <h1 class="w3-center text-capitalize" style="font-size: 110%; font-weight: bold;">Posts by {{ user.f_name + ' ' + user.l_name }} ({{ posts.total }})</h1>
+    {% elif current_user.has_role('Association') %}
+        <h1 class="w3-center" style="font-size: 110%; font-weight: bold;">Posts by {{ user.username }} ({{ posts.total }})</h1>
+    {% else %}
+        <h1 class="w3-center" style="font-size: 110%; font-weight: bold;">Posts by {{ user.username }} ({{ posts.total }})</h1>
+    {% endif %}
+    <div class="row" >
+        {% for post in posts.items %}
+        <div class="">
+            <div class="row">
+            <p>
+                <a class="row" href="{{ url_for('posts.userPosts', username=post.author.username) }}">
+                    <img class="w3-circle " style="width:10%;" src="{{ url_for('static', filename='img/' + post.author.image_file) }}" alt="profile">
+                    <span class="lead">{{ post.author.username }}</span>
+                </a>
+                <small>{{ moment(post.date_posted).fromNow(refresh=True) }}</small>
+            </p>
+            </div>
+            <div class="">
+            <h4 class="text-capitalize"><a href="{{ url_for('posts.VPost', post_id=post.id) }}">{{ post.title }}</a></h4>
+            {% if post.img_file %}
+            <img id="image" style="width:65%;" class="image-fluid figure-img w3-display-container w3-hover-opacity" src="{{ url_for('static', filename='img/' + post.img_file )}}" alt="image">
+            {% endif %}
+            <p class="lead">{{ post.content }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+
+        {% if page_num %}
+
+        {% if posts.page == page_num %}
+            <a class="btn btn-info mb-4" href="{{ url_for('posts.userPosts', username=user.username, page=page_num) }}">{{ page_num }}</a>
+        {% else %}
+            <a class="btn btn-outline-info mb-4" href="{{ url_for('posts.userPosts', username=user.username, page=page_num) }}">{{ page_num }}</a>
+        {% endif %}
+
+        {% else %}
+        ...
+        {% endif %}
+
+    {% endfor %}
+</div>
+
+
+{% endblock content %}

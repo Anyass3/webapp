@@ -1,0 +1,109 @@
+{% extends "register/register_layout.html" %}
+
+{% block registerContent %}
+
+
+          <!-- Association Account -->
+          <div class="tab-pane active w3-animate-left " id="association">
+            
+            <form novalidate method="POST">
+              {{ form.csrf_token }}
+              <div class="row">
+                <div class="col-md-9 mb-3 col-sm-8">
+                  {{ form.or_name.label(class="form-control-label") }}
+                  {% if form.or_name.errors %}
+                    {{ form.or_name(class='form-control form-control-lg is-invalid') }}
+                    <div class="invalid-feedback">
+                      {% for error in form.or_name.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                      {{ form.or_name(class="form-control form-control-lg ") }}
+                  {% endif %}
+                </div>
+                <div class="col-md-3 mb-3 col-sm-4">
+                  {{ form.shorten.label(class="form-control-label") }}
+                  {% if form.shorten.errors %}
+                    {{ form.shorten(class='form-control form-control-lg is-invalid') }}
+                    <div class="invalid-feedback">
+                      {% for error in form.shorten.errors %}
+                        <span>{{ error }}</span>
+                      {% endfor %}
+                    </div>
+                    {% else %}
+                      {{ form.shorten(class="form-control form-control-lg text-uppercase") }}
+                  {% endif %}
+                </div>
+              </div>
+              <div class="row">
+                  <div class=" mb-3 col-sm-6">
+                    {{ form.email.label(class="form-control-label") }}
+                    {% if form.email.errors %}
+                      {{ form.email(class='form-control form-control-lg is-invalid text-lowercase') }}
+                      <div class="invalid-feedback">
+                        {% for error in form.email.errors %}
+                          <span>{{ error }}</span>
+                        {% endfor %}
+                      </div>
+                      {% else %}
+                        {{ form.email(class="form-control form-control-lg text-lowercase") }}
+                    {% endif %}
+                        
+                  </div>
+                  <div class=" mb-3 col-sm-6">
+                    {{ form.code.label(class="form-control-label") }}
+                    {% if form.code.errors %}
+                      {{ form.code(class='form-control form-control-lg is-invalid') }}
+                      <div class="invalid-feedback">
+                        {% for error in form.code.errors %}
+                          <span>{{ error }}</span>
+                        {% endfor %}
+                      </div>
+                      {% else %}
+                        {{ form.code(class="form-control form-control-lg ") }}
+                    {% endif %}
+                    </div>
+                  </div>
+                
+                <div class="row">
+                    <div class=" mb-3 col-sm-6">
+                      {{ form.password.label(class="form-control-label") }}
+                      {% if form.password.errors %}
+                        {{ form.password(class='form-control form-control-lg is-invalid') }}
+                        <div class="invalid-feedback">
+                          {% for error in form.password.errors %}
+                            <span>{{ error }}</span>
+                          {% endfor %}
+                        </div>
+                        {% else %}
+                          {{ form.password(class="form-control form-control-lg ") }}
+                      {% endif %}
+                    </div>
+                    
+                    <div class=" mb-3 col-sm-6">
+                      {{ form.confirm_password.label(class="form-control-label") }}
+                      {% if form.confirm_password.errors %}
+                        {{ form.confirm_password(class='form-control form-control-lg is-invalid') }}
+                        <div class="invalid-feedback">
+                          {% for error in form.confirm_password.errors %}
+                            <span>{{ error }}</span>
+                          {% endfor %}
+                        </div>
+                        {% else %}
+                          {{ form.confirm_password(class="form-control form-control-lg ") }}
+                      {% endif %}
+                    </div>
+                  </div>
+            
+                  <div class="form-group">
+                    {{ form.submit(class="btn btn-outline-info") }}
+                  </div>
+            </form>
+          
+        </div>
+        
+        <!-- Association Account Ends -->
+
+
+{% endblock registerContent %}

@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<style type="text/css" >
+    
+  </style>
+{% endblock style %}
+
+
+{% block content %}
+
+<div class="container-fluid" id="post">
+    <form novalidate method="Post" action="" enctype="multipart/form-data" class="jumbotron jumbotron-fluid">
+        <h2 class="w3-center text-dark lead">{{ legend }}</h2>
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            <div class="col">
+            {{ form.title.label(class="form-control-label") }}
+            {% if form.title.errors %}
+                {{ form.title(class='form-control form-control-lg is-invalid text-capitalize') }}
+                <div class="invalid-feedback">
+                {% for error in form.title.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+                </div>
+                {% else %}
+                {{ form.title(class="form-control form-control-lg text-capitalize") }}
+            {% endif %}
+            </div>
+            <div class="col">
+            {{ form.content.label(class="form-control-label") }}
+            {% if form.content.errors %}
+                {{ form.content(class='form-control form-control-lg is-invalid', style="background:transparent") }}
+                <div class="invalid-feedback">
+                {% for error in form.content.errors %}
+                    <span>{{ error }}</span>
+                {% endfor %}
+                </div>
+                {% else %}
+                {{ form.content(class="form-control form-control-lg", style="background:transparent") }}
+            {% endif %}
+            </div>
+
+            <div class="col">
+                {{ form.img_file.label() }}
+                {{ form.img_file(class="form-control-file") }}
+      
+                {% if form.img_file.errors %}
+                  {% for error in form.img_file.errors %}
+                    <span class="text-danger">{{ error }}</span><br>
+                  {% endfor %}
+                {% endif %}
+            </div>
+
+        </div>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info pl-1 ml-3") }}
+        </div>  
+    </form>
+</div>
+
+
+{% endblock content %}

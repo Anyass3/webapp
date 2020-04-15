@@ -1,0 +1,49 @@
+{% extends "reset/reset_layout.html" %}
+
+{% block resetContent %}
+<div class="form-group">
+    {{ form.password.label(class="form-control-label") }}
+    {% if form.password.errors %}
+      {{ form.password(class='form-control form-control-lg is-invalid') }}
+      <div class="invalid-feedback">
+        {% for error in form.password.errors %}
+          <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% else %}
+        {{ form.password(class="form-control form-control-lg ") }}
+    {% endif %}
+</div>
+
+<div class="form-group">
+    {{ form.new_password.label(class="form-control-label") }}
+    {% if form.new_password.errors %}
+      {{ form.new_password(class='form-control form-control-lg is-invalid') }}
+      <div class="invalid-feedback">
+        {% for error in form.new_password.errors %}
+          <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% else %}
+        {{ form.new_password(class="form-control form-control-lg ") }}
+    {% endif %}
+</div>
+
+<div class="form-group">
+    {{ form.confirm_password.label(class="form-control-label") }}
+    {% if form.confirm_password.errors %}
+      {{ form.confirm_password(class='form-control form-control-lg is-invalid') }}
+      <div class="invalid-feedback">
+        {% for error in form.confirm_password.errors %}
+          <span>{{ error }}</span>
+        {% endfor %}
+      </div>
+      {% else %}
+        {{ form.confirm_password(class="form-control form-control-lg ") }}
+    {% endif %}
+</div>
+
+<div class="form-group" style="float: right;">
+    {{ form.submit(class="btn btn-outline-info") }}
+</div>
+{% endblock resetContent %}

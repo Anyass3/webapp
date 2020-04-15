@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block style %}
+<style type="text/css" >
+    
+  </style>
+{% endblock style %}
+
+
+{% block content %}
+{% if current_user.can(Permission.ADMIN) %}
+<div class="vh-100">
+  <h1>Woow welcome to My About Page</h1>
+</div>
+{% endif %}
+
+{% endblock content %}

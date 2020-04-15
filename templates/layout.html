@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='general.css') }}">
+    
+    
+    {{ moment.include_moment() }}
+
+    {% block style %}{% endblock style %}
+
+    {% if title %}
+        <title>IG - {{ title }}</title>
+    {% else %}
+        <title>My Website</title>
+    {% endif %}
+  </head>
+  <body>
+      
+        
+        <!--  nav starting -->
+        <nav class="w3-container w-100 navbar m-auto navbar-expand-md navbar-light bg-light sticky-top w3-card-4">
+            <a class="navbar-brand" href="/">My Website</a>
+
+            <button class="narbar-toggler d-md-none ml-auto" type="button" data-toggle="collapse" data-target='#navContent' aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navContent">
+            <ul class="navbar-nav w3-hide-small">
+                <li class="nav-item mx-4">
+                    <a href="100.115.92.207:8000"><i class="fa fa-twitter"></i></a>
+                </li>
+                <li class="nav-item mx-4">
+                    <a href="#"><i class="fa fa-facebook-f"></i></a>
+                </li>
+                <li class="nav-item mx-4">
+                    <a href="#"><i class="fa fa-instagram"></i></a>
+                </li>
+            </ul>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                <a class="nav-link  {{ active_home }}" href="{{ url_for('main.home') }}">Home</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link  {{ active_about }}" href="{{ url_for('main.about') }}">About</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                    {% if current_user.has_role('Association') %}
+                        <li class="nav-item">
+                            <a class="nav-link  {{ active_account }}" href="{{ url_for('users.account') }}">Account</a>
+                        </li>
+                    {% elif current_user.has_role('Scholar') %}
+                        <li class="nav-item">
+                            <a class="nav-link  {{ active_account }}" href="{{ url_for('users.accountScholar') }}">Account</a>
+                        </li>
+                    {% elif current_user.has_role('admin') %}
+                        <li class="nav-item">
+                            <a class="nav-link  {{ active_account }}" href="{{ url_for('myadmin.account') }}">Account</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link  {{ active_account }}" href="{{ url_for('users.accountIndividual') }}">Account</a>
+                        </li>
+                    {% endif %}
+                <li class="nav-item">
+                    <a class="nav-link  {{ active_post }}" href="{{ url_for('posts.newPost') }}">New Post</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link btn {{ active_logout }}" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                </li>
+                {% else %}
+                    <li class="nav-item">
+                    <a class="nav-link  {{ active_register }}" href="{{ url_for('users.register') }}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link  {{ active_login }}" href="{{ url_for('users.login') }}">Login</a>
+                    </li>
+                {% endif %}
+            </ul>
+            </div>
+        </nav>
+        <p class="display-6 text-center lead" style="font-size: 110%;">Assalamu Alaikum Warahmatullahi Wabarakaatuhu</p>
+        <!--  nav ends -->
+      
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="text-center alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        <div>
+        {% block content %}{% endblock content %}
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+        
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  <form action="{{ url_for('users.logout') }}" method="POST">
+                    <input class="btn btn-warning" type="submit" value="Logout">
+                  </form>
+                </div>
+              </div>
+            </div>
+        </div>
+        </div>
+            
+        <!--** social **-->
+        <div id="social" class="container-fluid w3-padding-jumbo w3-center w3-brown social-logo">
+            <a class="mx-md-3 mx-lg-5 mx-xl-7" href="#"><i class="fa fa-twitter"></i></a>
+            <a class="mx-md-3 mx-lg-5 mx-xl-7" href="#"><i class="fa fa-facebook-f"></i></a>
+            <a class="mx-md-3 mx-lg-5 mx-xl-7" href="#"><i class="fa fa-instagram"></i></a>
+            
+        </div>
+
+        <!--** social end **-->
+        <!--** Footer **-->
+        <footer class="container-fluid row w3-dark-grey">
+            <div class="s12 col-md-6 col-lg-3">
+            <ul style="list-style-type:none;margin-top: 3.5%;">
+                <p class="display-5"><a href="#">Donate to an Association</a></p>
+                <p class="display-5"><a href="#">Sponsor Events</a></p>
+                <p class="display-5"><a href="#">Learn more on how to get a code</a></p>
+            </ul>
+            </div>
+            <div class="s12 col-md-6 col-lg-3">
+            <h4 class="display-5"><b>Contact Developer</b></h4>
+            <p><i class="fa fa-compass mx-2"></i><b>Address:</b> Sukuta, Serrekunda</p>
+            <p><i class="fa fa-envelope-square mx-2"></i><b>E-mail: </b>developer@ig.com</p>
+            <p><i class="fa fa-phone mx-2"></i><b>Phone: </b>+2202544505</p>
+            <p><a href="#"><i class="fa fa-twitter-square mx-2"></i><b>Twitter</b></a></p>
+            <p><a href="#"><i class="fa fa-facebook mx-2"></i><b>Facebook</b></a></p>
+            </div>
+            <div class="col-sm-12 col-lg-6">
+            <p class="lead" style="margin-top: 1.7%;">Fill this in order to recieved answered questons by the Scholars</p>
+            <form method="get">
+                <input type="name" name="name" placeholder="Name" style="width:50%" class="form-control-sm form-control w3-light-grey w3-leftbar w3-border-blue w3-animate-input">
+                <input type="email" name="email" style="width:50%" required placeholder="Email" class="form-control-sm form-control w3-light-grey w3-leftbar w3-border-blue w3-animate-input">
+                <button title="submit" class="w3-btn w3-white w3-border w3-border-blue w3-round" type="submit">submit</button>
+            </form>
+            </div>
+        </footer>
+
+        <!--** Footer Ends**-->
+
+      
+
+    <!-- Optional JavaScript -->
+    <script src="{{ url_for('static', filename='general.js') }}"></script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    {{ moment.include_moment() }}
+    {{ moment.locale('en') }}
+  </body>
+</html>
