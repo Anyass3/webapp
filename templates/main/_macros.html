@@ -1,0 +1,33 @@
+{% macro pagination_widget(pagination, endpoint, id='posts') %}
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-end">
+        <li {% if not pagination.has_prev %} class="d-none" {% else %} class="lead mx-2" {% endif %}>
+            <a href="{% if pagination.has_prev %}{{ url_for(endpoint,
+                page=pagination.page - 1, **kwargs) }}#{{ id }} {% else %}#{% endif %}">
+                &laquo;
+            </a>
+        </li>
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                {% if p == pagination.page %}
+                <li class="active page-item">
+                    <a href="{{ url_for(endpoint, page = p, **kwargs) }}#{{ id }}" class="page-link">{{ p }}</a>
+                </li>
+                {% else %}
+                <li class="page-item">
+                    <a href="{{ url_for(endpoint, page = p, **kwargs) }}#{{ id }}" class="page-link">{{ p }}</a>
+                </li>
+                {% endif %}
+            {% else %}
+            <li class="disabled"><a href="#">&hellip;</a></li>
+            {% endif %}
+        {% endfor %}
+        <li {% if not pagination.has_next %} class="d-none" {% else %} class="lead mx-2"{% endif %}>
+            <a href="{% if pagination.has_next %}{{ url_for(endpoint,
+                page=pagination.page + 1, **kwargs) }}#{{ id }} {% else %}#{% endif %}">
+                &raquo;
+            </a>
+        </li>
+    </ul>
+</nav>
+{% endmacro %}
