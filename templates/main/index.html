@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% import "main/_macros.html" as macros %}
 
 {% block style %}
 <style type="text/css" >
@@ -110,8 +111,8 @@
     </div>
     <!--** Events ends**-->
       <div class="container" >
-          <h1 class="display-5 w3-center">Posts</h1>
-          <div id="posts">
+        <h1 class="display-5 w3-center">Posts</h1>
+        <div id="posts mb-1">
           <div class="row">
             {% for post in posts.items %}
             <div class="col-sm-6 card " >
@@ -135,23 +136,7 @@
             {% endfor %}
           </div>
         </div>
-          <div>
-            {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-
-              {% if page_num %}
-
-                {% if posts.page == page_num %}
-                  <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}#posts">{{ page_num }}</a>
-                {% else %}
-                  <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}#posts">{{ page_num }}</a>
-                {% endif %}
-
-              {% else %}
-              ...
-              {% endif %}
-
-            {% endfor %}
-          </div>
+        {{ macros.pagination_widget(posts, 'main.home') }}
       </div>
     
     <div class="container">
