@@ -1,2 +1,1 @@
 # unity
-this for Allah
