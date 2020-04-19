@@ -65,7 +65,7 @@ class UpdateAssociationForm(FlaskForm):
 class ScholarForm(FlaskForm):
     f_name = StringField('First Name', validators=[DataRequired(), Length(min=3, max=20)])
     l_name = StringField('Surname', validators=[DataRequired(), Length(min=3, max=20)])
-    address = StringField('Address', validators=[DataRequired(), Length(max=20)])
+    address = StringField('Address', validators=[DataRequired()])
     email = StringField('Email', validators=[Email()])
     phone = StringField('Phone', validators=[DataRequired(), Length(min=7, max=12)])
     code = StringField(validators=[DataRequired(), Length(min=6, max=6)])
@@ -87,7 +87,7 @@ class UpdateScholarForm(FlaskForm):
     username = StringField('Username', validators=[DataRequired(), Length(min=5)])
     f_name = StringField('First Name', validators=[ Length(min=2)])
     l_name = StringField('Last Name', validators=[ Length(min=2)])
-    address = StringField('Address', validators=[ Length(max=20)])
+    address = StringField('Address', validators=[])
     phone = StringField('Phone', validators=[ Length(max=10)])
     pic = FileField('Update Profile Picture', validators=[FileAllowed(['jpg','jpeg', 'png'])])
     submit = SubmitField('Update')
@@ -110,8 +110,8 @@ class UpdateScholarForm(FlaskForm):
 class IndividualForm(FlaskForm):
     f_name = StringField('First Name', validators=[DataRequired(), Length(min=1, max=10)])
     l_name = StringField('Surname', validators=[DataRequired(), Length(min=1, max=10)])
-    address = StringField('Address', validators=[DataRequired(), Length(min=1, max=10)])
-    email = StringField('Email', validators=[DataRequired(), Email(), Length(min=1, max=20)])
+    address = StringField('Address', validators=[DataRequired(), Length(min=1)])
+    email = StringField('Email', validators=[DataRequired(), Email(), Length(min=1)])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8)])
     phone = StringField('phone', validators=[DataRequired(), Length(min=1, max=10)])
     password = PasswordField('Password', validators=[DataRequired(), Length(min=8)])

@@ -23,12 +23,13 @@ def before_request():
     for user in temp:
         user.ping()
     if current_user.is_authenticated:
+        current_user.ping()
         if not current_user.active:
             logout_user()
             flash('Sorry!!!.Your account has been deactivated due to some issues', 'danger')
             flash('Please contact admin. For more info', 'info')
             return redirect(url_for('main.home'))
-        current_user.ping()
+        
         if current_user.has_role('Individual') \
                 and not current_user.confirmed \
                 and request.blueprint != 'users' \
@@ -85,12 +86,12 @@ def registerIndividual():
             username +=  str(form.phone.data)
         pw_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
         user = User(f_name=form.f_name.data, address=form.address.data, l_name=form.l_name.data, phone=form.phone.data, email=form.email.data, username=username, password=pw_hash)
-        Individual = Role.query.filter_by(name='Individual').first()
-        user.role = Individual
+        #Individual = Role.query.filter_by(name='Individual').first()
+        #user.role = Individual
         db.session.add(user)
         db.session.commit()
         token = user.generate_token()
-        send_email(user.email, 'confirm your account', 'email/confirm', user=user, token=token)
+        send_email(user.email, 'confirm your account', 'email/send', user=user, token=token)
         if current_user.is_authenticated:
             flash(f'Your account has been created. You are now automatically logged in', 'success')
             return redirect(url_for('main.home'))
@@ -408,7 +409,7 @@ def unconfirmed():
 @login_required
 def new_confirm():
     token = current_user.generate_token()
-    send_email(current_user.email, 'confirm your account', 'email/confirm', user=current_user, token=token, do='confirm', what='account')
+    send_email(current_user.email, 'confirm your account', 'email/send', user=current_user, token=token, do='confirm', what='account')
     flash('A new confirmation email has been sent to you by email.', 'success')
     return redirect(url_for('main.home'))
 #############################################CONFIRMATIONS#############################################

@@ -1,8 +1,12 @@
 {% extends 'email/e_layout.html' %}
 
 {% block email %}
-
-    <h3> Dear {{ user.trole}}, </h3>
+    {% if user.trole %}
+        <h3> Dear {{ user.trole}}, </h3>
+    {% else %}
+        <h3>Dear {{ user.username}}, </h3>
+    {% endif %}
+    
     <h4 style="text-align: center;"> Welcome to WebsiteName! </h4>
 
     {% if code %}

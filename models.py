@@ -11,7 +11,7 @@ from flask_admin.menu import MenuCategory, MenuView, MenuLink, SubMenuCategory  
 #from webapp.forms import LoginForm
 @current_app.shell_context_processor
 def make_shell_context():
-    return dict(db=db, User=User, Role=Role, Post=Post, Temp_user=Temp_user, Permission=Permission)
+    return dict(db=db, User=User, Role=Role, Post=Post, Temp_user=Temp_user, Permission=Permission, Follow=Follow)
 
 
 @login_manager.user_loader
@@ -122,6 +122,19 @@ class Role(db.Model):
             db.session.add(role)
         db.session.commit()
 
+#the follows association table as a model
+class Follow(db.Model):
+    __tablename__ = 'follows'
+    follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+#the join association table as a model
+class Join(db.Model):
+    __tablename__ = 'joins'
+    member_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    association_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
 # Define User data-model
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -139,7 +152,7 @@ class User(db.Model, UserMixin):
     member_since = db.Column(db.DateTime(), default=datetime.utcnow)
     confirmed_at = db.Column(db.DateTime())
     confirmed = db.Column(db.Boolean(), default=False)
-    last_seen = db.Column(db.DateTime())
+    last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     #location = db.Column(db.String())
 
     # User fields
@@ -152,9 +165,22 @@ class User(db.Model, UserMixin):
     l_name = db.Column(db.String())
     address = db.Column(db.String())
 
-    # Relationships
+    # Relationships:
+    ##posts
     posts = db.relationship('Post', backref='author', lazy=True)
+    ##roles
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'), nullable=False)
+    ##follows
+    followed = db.relationship('Follow', foreign_keys=[Follow.follower_id], backref=db.backref('follower', lazy='joined'),
+                            lazy='dynamic', cascade='all, delete-orphan')
+    followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], backref=db.backref('followed', lazy='joined'),
+                            lazy='dynamic', cascade='all, delete-orphan')
+    ##joining association
+    members = db.relationship('Join', foreign_keys=[Join.association_id], backref=db.backref('member', lazy='joined'),
+                            lazy='dynamic', cascade='all, delete-orphan')
+    association = db.relationship('Join', foreign_keys=[Join.member_id], backref=db.backref('association', lazy='joined'),
+                            lazy='dynamic', cascade='all, delete-orphan')
+
     # TODO role.id
     def has_role(self, urole):
         # db is your database session.
@@ -173,15 +199,17 @@ class User(db.Model, UserMixin):
                     db.session.delete(p)
             db.session.delete(self)
             db.session.commit()
-    '''
+  
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role_id is None:
             if 'website.an@gmail.com' == self.email:#todo == current_app.config['username']
                 self.role = Role.query.filter_by(name='admin').first()
             if self.role is None:
-                self.role = Role.query.filter_by(default=True).first
-    '''
+                self.role = Role.query.filter_by(default=True).first()
+        if not self.has_role('Individual'):
+            self.follow(self)
+
     def can(self, perm):
         return self.role is not None and self.role.has_permission(perm)
 
@@ -190,6 +218,63 @@ class User(db.Model, UserMixin):
 
     #def group(self):
     #    if self.role
+
+    def follow(self, user):
+        if not user.has_role('Individual'):    
+            if not self.is_following(user):
+                f = Follow(follower=self, followed=user)
+                db.session.add(f)
+    def unfollow(self, user):
+        if self.is_following(user):
+            f = self.followed.filter_by(followed_id=user.id).first()
+            if f:
+                db.session.delete(f)
+    def is_following(self, user):
+        if user.id is None:
+            return False
+        if user.has_role('Individual'):
+            return False
+        return self.followed.filter_by(followed_id=user.id).first() is not None
+    def is_followed_by(self, user):
+        if user.id is None:
+            return False
+        return self.followers.filter_by(follower_id=user.id).first() is not None
+    @property
+    def followed_posts(self):
+        return Post.query.join(Follow, Follow.followed_id == Post.user_id)\
+            .filter(Follow.follower_id == self.id)
+    
+    def join(self, user):
+        if user.has_role('Association'):
+            if not self.is_a_member(user):
+                j = Join(member=self, association=user)
+                db.session.add(j)
+                self.follow(user)
+    def unjoin(self, user):
+        j = self.association.filter_by(association_id=user.id).first()
+        if j:
+            db.session.delete(j)
+    def is_a_member(self, user):
+        if user.id is None:
+            return False
+        if not user.has_role('Association'):
+            return False
+        return self.association.filter_by(association_id=user.id).first() is not None
+    def is_association_for(self, user):
+        if user.id is None:
+            return False
+        if user.has_role('Association'):
+            return False
+        return self.members.filter_by(member_id=user.id).first() is not None
+
+
+    @staticmethod
+    def add_self_follows():
+        for user in User.query.all():
+            if not user.is_following(user):
+                user.follow(user)
+                db.session.add(user)
+                db.session.commit()
 
     def generate_token(self, expires_in=3600):
         s = Serializer(current_app.config['SECRET_KEY'], expires_in)
@@ -244,13 +329,6 @@ class AnonymousUser(AnonymousUserMixin):
 login_manager.anonymous_user = AnonymousUser
 login_manager.session_protection = "strong"
 
-class Association(User):
-    pass
-class Scholar(User):
-    pass
-class Individual(User):
-    pass
-
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -259,6 +337,15 @@ class Post(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     content = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+
+
+
+class Association(User):
+    pass
+class Scholar(User):
+    pass
+class Individual(User):
+    pass
 
 class Ass_Post(Association):
     pass
@@ -273,7 +360,6 @@ class MyView(BaseView):
 class UserView(ModelView):
     @expose('/admin/', methods=('GET', 'POST'))
     def create_view(self):
-        pass
         return self.render('admin.register_login.html')
 
 class MyModelView(ModelView):
@@ -335,7 +421,7 @@ admin.add_link(MenuLink(name='Home Page', url='/', category='Links'))
 #db.drop_all()
 #db.drop_all()
 
-db.create_all(app=current_app)
+#db.create_all(app=current_app)
 #Temp_user.drop()
 
 

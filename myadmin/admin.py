@@ -29,13 +29,14 @@ def all():
             return redirect(url_for('main.home'))
     elif not current_user.is_authenticated:
         abort(403)
-    users = User.query.all()
+    
     columns = ['edit', 'id', 'role', 'username', 'email', 'active', 'confirmed', 'last_seen', 'member_since', 'confirmed_at']
 
     page = request.args.get('page', 1, type=int)
-    user_table=User.query.order_by(User.id).paginate(per_page=4, page=page)
+    user_table=User.query.order_by(User.id).paginate(page, per_page=20, error_out=False)
+    users = user_table.items
 
-    return render_template('myadmin/user_roles.html', active_all='active', users=users, columns=columns, datetime=datetime, user_table=user_table)
+    return render_template('myadmin/user_roles.html', active_all='active', users=users, columns=columns, user_table=user_table)
 
 
 @myadmin.route('/myadmin/admin')
@@ -314,7 +315,6 @@ def register_code(user_role):
         token = tuser.code
         info = 'If you did not make this request then someone is trying to signup for an account with your email address'
         send_email(tuser.temail, 'Code For Register', 'email/send', user=tuser, info=info, code=token)
-
         db.session.commit()
         flash('An email has been sent. Tell him/her to check his email', 'success')
         return redirect(url_for('myadmin.account'))

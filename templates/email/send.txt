@@ -1,5 +1,8 @@
-
-Dear {{ user.trole}}, 
+{% if user.trole %}
+    Dear {{ user.trole}},
+{% else %}
+    Dear {{ user.username}}
+{% endif %}
 
 Welcome to WebsiteName!
 

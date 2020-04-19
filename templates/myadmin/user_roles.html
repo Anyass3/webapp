@@ -1,4 +1,5 @@
 {% extends 'myadmin/layout.html' %}
+{% import 'main/_macros.html' as macros %}
 
 {% block myadmin %}
      
@@ -32,7 +33,7 @@
               <div class="fade show">
                 {% if column == 'last_seen' %}
                 {% set row = row.last_seen %}
-                {% set row=moment(row).fromTime(datetime.utcnow(), refresh=True) %}
+                {% set row=moment(row).fromNow(refresh=True) %}
                 <td>{{ row }}</td>
 
                 {% elif column == 'edit'  %}
@@ -54,21 +55,7 @@
   </tbody>
 </table>
 <div>
-  {% for page_num in user_table.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-
-    {% if page_num %}
-
-      {% if user_table.page == page_num %}
-        <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}#posts">{{ page_num }}</a>
-      {% else %}
-        <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}#posts">{{ page_num }}</a>
-      {% endif %}
-
-    {% else %}
-    ...
-    {% endif %}
-
-  {% endfor %}
+  {{ macros.pagination_widget(user_table, 'myadmin.all') }}
 </div>
 
 

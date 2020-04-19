@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% import 'main/_macros.html' as macros %}
 
 {% block style %}
 <style type="text/css" >
@@ -42,14 +43,15 @@
     </div>
     <!--  slides ends  -->
     <!--** Events **-->
-    <nav class="nav justify-content-center nav-pills nav-justified nav-fill mt-3 flex-column flex-md-row">
+    <nav aria-label="events" class="nav justify-content-center nav-pills nav-justified nav-fill mt-3 flex-column flex-md-row">
       <a class="nav-link" href="#latest" data-toggle="tab">Latest</a>
       <a class="nav-link active" href="#upComing" data-toggle="tab">UpComing</a>
     </nav>
     
     <div class="container tab-content py-5">
-        <div id='upComing' class="tab-pane active w3-animate-opacity ">
-            <div class="w3-third">
+        <div id='upComing' class="tab-pane active w3-animate-opacity">
+          <div class="row">
+            <div class="col-12 col-sm-4 ">
               <div class="reduce w3-center">
                 <h4>The Heart</h4>
                 <img id="image" class="image-fluid figure-img" src="../static/img/heart.png" alt="image">
@@ -59,7 +61,7 @@
                 </p>
               </div>
             </div>
-            <div class="w3-third">
+            <div class="col-12 col-sm-4">
               <div class="reduce w3-center">
                 <h4>The Awareness</h4>
                 <img id="image" class="image-fluid figure-img" src="../static/img/charity.jpg" alt="image">
@@ -68,7 +70,7 @@
                 proident, sunt in culpa qui officia deserunt mollit ani
               </div>
             </div>
-            <div class="w3-third">
+            <div class="col-12 col-sm-4">
               <div class="reduce w3-center">
                 <h4>The Charity</h4>
                 <img id="image" class="image-fluid figure-img" src="../static/img/charity.jpg" alt="image">
@@ -77,9 +79,11 @@
                 proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
               </div>
             </div>
+          </div>
         </div>
-        <div id='latest' class="tab-pane w3-card w3-animate-opacity">
-            <div class="w3-third">
+        <div id='latest' class="tab-pane">
+          <div class="row">
+            <div class="col-12 col-sm-4">
               <div class="reduce w3-center">
                 <h4>The Prophet</h4>
                 <img id="image" class="image-fluid figure-img" src="../static/img/prophet.jpg" alt="image">
@@ -88,7 +92,7 @@
                 proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
               </div>
             </div>
-            <div class="w3-third">
+            <div class="col-12 col-sm-4">
               <div class="reduce w3-center">
                 <h4>The Ceiling</h4>
                 <img id="image" class="image-fluid figure-img" src="../static/img/ppp4.png" alt="image">
@@ -97,8 +101,8 @@
                 proident, sunt in culpa qui officia olor in deserunt mollit anim id est laborum.</p>
               </div>
             </div>
-            <div class="w3-third">
-              <div class="reduce w3-center">w3-third
+            <div class="col-12 col-sm-4">
+              <div class="reduce w3-center">
                 <h4>The Muslims</h4>
                 <img id="image" class="image-fluid figure-img" src="../static/img/muslims.jpg" alt="image">
                 <p class="lead">consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
@@ -107,14 +111,22 @@
               </div>
             </div>
         </div>
+      </div>
     </div>
     <!--** Events ends**-->
       <div class="container" >
-          <h1 class="display-5 w3-center">Posts</h1>
+        <div aria-label="posts" class="post-tabs">
+          <ul class="nav nav-tabs">
+            <li class="nav-item"><a {% if not show_followed %} class="nav-link active"{% else %}class="nav-link"{% endif %} href="{{ url_for('main.show_all') }}#posts">Posts</a></li>
+            {% if current_user.is_authenticated %}
+            <li class="nav-item"><a {% if show_followed %} class="nav-link active"{% else %}class="nav-link"{% endif %} class="" href="{{ url_for('main.show_followed') }}#posts">Followed</a></li>
+            {% endif %}
+          </ul>
+        </div>
           <div id="posts">
           <div class="row">
             {% for post in posts.items %}
-            <div class="col-sm-6 card " >
+            <div class="col-12 col-sm-6 card" >
                 <div class="row">
                   <p>
                     <a class="" href="{{ url_for('posts.userPosts', username=post.author.username) }}">
@@ -136,21 +148,7 @@
           </div>
         </div>
           <div>
-            {% for page_num in posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-
-              {% if page_num %}
-
-                {% if posts.page == page_num %}
-                  <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}#posts">{{ page_num }}</a>
-                {% else %}
-                  <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}#posts">{{ page_num }}</a>
-                {% endif %}
-
-              {% else %}
-              ...
-              {% endif %}
-
-            {% endfor %}
+            {{ macros.pagination_widget(posts, 'main.home') }}
           </div>
       </div>
     

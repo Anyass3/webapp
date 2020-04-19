@@ -26,7 +26,7 @@
       
         
         <!--  nav starting -->
-        <nav class="w3-container w-100 navbar m-auto navbar-expand-md navbar-light bg-light sticky-top w3-card-4">
+        <nav class="navbar m-auto navbar-expand-md navbar-light bg-light sticky-top w3-card-4">
             <a class="navbar-brand" href="/">My Website</a>
 
             <button class="narbar-toggler d-md-none ml-auto" type="button" data-toggle="collapse" data-target='#navContent' aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,26 +102,26 @@
             {% endif %}
         {% endwith %}
         <div>
-        {% block content %}{% endblock content %}
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+            {% block content %}{% endblock content %}
+            <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="logoutModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Confirm Logout</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+            
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <form action="{{ url_for('users.logout') }}" method="POST">
+                        <input class="btn btn-warning" type="submit" value="Logout">
+                    </form>
+                    </div>
                 </div>
-        
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                  <form action="{{ url_for('users.logout') }}" method="POST">
-                    <input class="btn btn-warning" type="submit" value="Logout">
-                  </form>
                 </div>
-              </div>
             </div>
-        </div>
         </div>
             
         <!--** social **-->
@@ -129,7 +129,6 @@
             <a class="mx-md-3 mx-lg-5 mx-xl-7" href="#"><i class="fa fa-twitter"></i></a>
             <a class="mx-md-3 mx-lg-5 mx-xl-7" href="#"><i class="fa fa-facebook-f"></i></a>
             <a class="mx-md-3 mx-lg-5 mx-xl-7" href="#"><i class="fa fa-instagram"></i></a>
-            
         </div>
 
         <!--** social end **-->
