@@ -11,7 +11,7 @@ from flask_admin.menu import MenuCategory, MenuView, MenuLink, SubMenuCategory  
 #from webapp.forms import LoginForm
 @current_app.shell_context_processor
 def make_shell_context():
-    return dict(db=db, User=User, Role=Role, Post=Post, Temp_user=Temp_user, Permission=Permission, Follow=Follow)
+    return dict(db=db, User=User, Role=Role, Post=Post, Temp_user=Temp_user, Permission=Permission, Follow=Follow, Join=Join, Temp_Join=Temp_Join)
 
 
 @login_manager.user_loader
@@ -22,20 +22,22 @@ def load_user(user_id):
 ########################################################
 class Permission:
     FOLLOW = 1
-    COMMENT = 2
+    JOIN = 2
     WRITE = 4
-    MODERATE = 8
-    ADMIN = 16
+    COMMENT = 8
+    MODERATE = 16
+    ADMIN = 32
 
 ##########TEMP SECTION#################
 
 class Temp_user(db.Model):
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer(), primary_key=True)
     code = db.Column(db.String(20), unique=True, nullable=False)
     temail = db.Column(db.String(50), unique=True, nullable=False)
     trole = db.Column(db.String(50), nullable=False)
     used = db.Column(db.Integer())
-    date = db.Column(db.DateTime(), default=datetime.utcnow, nullable=False)
+    date = db.Column(db.DateTime(), default=datetime.utcnow)
 
     def __init__(self, **kwargs):
         super(Temp_user, self).__init__(**kwargs)
@@ -72,6 +74,7 @@ class Temp_user(db.Model):
 # Define the Role data-model
 class Role(db.Model):
     __tablename__ = 'roles'
+    __table_args__ = {'extend_existing': True}
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(50), unique=True)
     default = db.Column(db.Boolean, default=False, index=True)
@@ -104,11 +107,11 @@ class Role(db.Model):
     @staticmethod
     def insert_roles():
         roles={
-            'Individual' : [Permission.FOLLOW, Permission.COMMENT],
-            'Association' : [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE],
-            'Scholar' : [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE],
-            'Moderator' : [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE, Permission.MODERATE],
-            'admin' : [Permission.FOLLOW, Permission.COMMENT, Permission.WRITE, Permission.MODERATE, Permission.ADMIN]
+            'Individual' : [Permission.FOLLOW, Permission.JOIN, Permission.COMMENT],
+            'Association' : [Permission.COMMENT, Permission.WRITE],
+            'Scholar' : [Permission.FOLLOW, Permission.JOIN, Permission.COMMENT, Permission.WRITE],
+            'Moderator' : [Permission.FOLLOW, Permission.JOIN, Permission.COMMENT, Permission.WRITE, Permission.MODERATE],
+            'admin' : [Permission.FOLLOW, Permission.JOIN, Permission.COMMENT, Permission.WRITE, Permission.MODERATE, Permission.ADMIN]
         }
         default_role = 'Individual'
         for r in roles:
@@ -125,15 +128,62 @@ class Role(db.Model):
 #the follows association table as a model
 class Follow(db.Model):
     __tablename__ = 'follows'
+    __table_args__ = {'extend_existing': True}
     follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    notify = db.Column(db.String)
+
+    def __init__(self, **kwargs):
+        super(Follow, self).__init__(**kwargs)
+        self.notify = "has started following you."
+        
+    @staticmethod
+    def show():
+        f=Follow.query.all()
+        for i in f:
+            print(i.notify)
+
+    @staticmethod
+    def reset():
+        f=Follow.query.all()
+        for i in f:
+                db.session.delete(i)
+        db.session.commit()
+        User.add_self_follows()
+        User.unnotify()
 #the join association table as a model
+class Temp_Join(db.Model):
+    temp_member_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    temp_association_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    notify = db.Column(db.String)
+
+    def __init__(self, **kwargs):
+        super(Temp_Join, self).__init__(**kwargs)
+        self.notify = "has sent you a join request."
+    @staticmethod
+    def reset():
+        j=Temp_Join.query.all()
+        for i in j:
+                db.session.delete(i)
+        db.session.commit()
 class Join(db.Model):
     __tablename__ = 'joins'
     member_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     association_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    notify = db.Column(db.String)
+
+    def __init__(self, **kwargs):
+        super(Join, self).__init__(**kwargs)
+        self.notify = "has just accepted your join request"
+    @staticmethod
+    def reset():
+        j=Join.query.all()
+        for i in j:
+                db.session.delete(i)
+        db.session.commit()
 
 # Define User data-model
 class User(db.Model, UserMixin):
@@ -176,9 +226,14 @@ class User(db.Model, UserMixin):
     followers = db.relationship('Follow', foreign_keys=[Follow.followed_id], backref=db.backref('followed', lazy='joined'),
                             lazy='dynamic', cascade='all, delete-orphan')
     ##joining association
-    members = db.relationship('Join', foreign_keys=[Join.association_id], backref=db.backref('member', lazy='joined'),
+    members = db.relationship('Join', foreign_keys=[Join.association_id], backref=db.backref('association', lazy='joined'),
                             lazy='dynamic', cascade='all, delete-orphan')
-    association = db.relationship('Join', foreign_keys=[Join.member_id], backref=db.backref('association', lazy='joined'),
+    association = db.relationship('Join', foreign_keys=[Join.member_id], backref=db.backref('member', lazy='joined'),
+                            lazy='dynamic', cascade='all, delete-orphan')
+    ##request joining association
+    temp_members = db.relationship('Temp_Join', foreign_keys=[Temp_Join.temp_association_id], backref=db.backref('temp_association', lazy='joined'),
+                            lazy='dynamic', cascade='all, delete-orphan')
+    temp_association = db.relationship('Temp_Join', foreign_keys=[Temp_Join.temp_member_id], backref=db.backref('temp_member', lazy='joined'),
                             lazy='dynamic', cascade='all, delete-orphan')
 
     # TODO role.id
@@ -203,7 +258,7 @@ class User(db.Model, UserMixin):
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
         if self.role_id is None:
-            if 'website.an@gmail.com' == self.email:#todo == current_app.config['username']
+            if 'website.an@gmail.com' == self.email:#! current_app.config['username']
                 self.role = Role.query.filter_by(name='admin').first()
             if self.role is None:
                 self.role = Role.query.filter_by(default=True).first()
@@ -218,7 +273,7 @@ class User(db.Model, UserMixin):
 
     #def group(self):
     #    if self.role
-
+    #todo > association should not follow anyone
     def follow(self, user):
         if not user.has_role('Individual'):    
             if not self.is_following(user):
@@ -244,13 +299,23 @@ class User(db.Model, UserMixin):
         return Post.query.join(Follow, Follow.followed_id == Post.user_id)\
             .filter(Follow.follower_id == self.id)
     
+    @staticmethod
+    def unnotify():
+        for user in User.query.all():
+            if user.is_following(user):
+                f = user.followed.filter_by(followed_id=user.id).first()
+                if f:
+                    f.notify=None
+                    db.session.commit()
+
+    #todo > temp_join
     def join(self, user):
         if user.has_role('Association'):
             if not self.is_a_member(user):
                 j = Join(member=self, association=user)
                 db.session.add(j)
                 self.follow(user)
-    def unjoin(self, user):
+    def leave(self, user):
         j = self.association.filter_by(association_id=user.id).first()
         if j:
             db.session.delete(j)
@@ -267,6 +332,32 @@ class User(db.Model, UserMixin):
             return False
         return self.members.filter_by(member_id=user.id).first() is not None
 
+    def temp_join(self, user):
+        if user.has_role('Association'):
+            if not self.temp_is_a_member(user):
+                j = Temp_Join(temp_member=self, temp_association=user)
+                print(j)
+                db.session.add(j)
+                self.follow(user)
+    def temp_leave(self, user):
+        j = self.temp_association.filter_by(temp_association_id=user.id).first()
+        if j:
+            db.session.delete(j)
+    def temp_is_a_member(self, user):
+        if user.id is None:
+            return False
+        if not user.has_role('Association'):
+            return False
+        return self.temp_association.filter_by(temp_association_id=user.id).first() is not None
+    def temp_is_association_for(self, user):
+        if user.id is None:
+            return False
+        if user.has_role('Association'):
+            return False
+        return self.temp_members.filter_by(temp_member_id=user.id).first() is not None
+
+    def notify(self, parameter_list):
+        pass
 
     @staticmethod
     def add_self_follows():
@@ -326,6 +417,15 @@ class AnonymousUser(AnonymousUserMixin):
         return False
     def is_administrator(self):
         return False
+    def is_following(self, user):
+        return False
+    def is_followed_by(self, user):
+        return False
+    def is_a_member(self, user):
+        return False
+    def is_association_for(self, user):
+        return False
+    
 login_manager.anonymous_user = AnonymousUser
 login_manager.session_protection = "strong"
 
@@ -375,6 +475,9 @@ class users_View(MyModelView):
     column_exclude_list = ['password', 'image_file', 'code', 'f_name', 'l_name', 'address', 'phone','or_name', 'shorten']
     form_excluded_columns = []
 
+class follow_view(MyModelView):
+    pass
+
 class Ass_View(MyModelView):
     column_exclude_list = ['password', 'image_file', 'code', 'f_name', 'l_name', 'address', 'phone']
     form_excluded_columns = ['password', 'image_file', 'code', 'f_name', 'l_name', 'address', 'phone']
@@ -405,7 +508,7 @@ class TempView(MyModelView):
 admin.add_view(users_View(User, db.session))
 #admin.add_view(Ass_View(Association, db.session, category="Users"))
 #admin.add_view(Sch_View(Scholar, db.session, category="Users"))
-#admin.add_view(Ind_View(Individual, db.session, category="Users"))
+admin.add_view(follow_view(Follow, db.session))
 admin.add_view(RoleView(Role, db.session))
 admin.add_view(PostView(Post, db.session))
 

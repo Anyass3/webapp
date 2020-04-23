@@ -3,38 +3,44 @@
 
 {% block user %}
 <div class="page-header">
-    <h1>{{ title }} {{ user.username }}</h1>
+    <h4>{{ title }} {{ user.username }}</h4>
 </div>
-<table class="table table-hover followers">
-    <thead><tr><th>User</th><th>Since</th><th>Follow</th></tr></thead>
+<table class="table table-hover table-responsive-sm">
+    <thead>
+            <th scope="col"><span class="btn">User</span></th>
+            <th class="w3-hide-small" scope="col"><span class="btn">Since</span></th>
+            <th scope="col"><span class="btn">Follow</span></th>
+    </thead>
+    <tbody>
     {% for follow in follows %}
-        {% if user.username != follow.user.username %}
         <tr>
+        {% if user.username != follow.user.username %}
+        
             <td>
-                <a href="{{ url_for('posts.userPosts', username = follow.user.username) }}">
+                <a href="{{ url_for('posts.user_posts', username = follow.user.username) }}">
                     <img class="img-fluid w3-circle" style="width:10%;" src="{{ url_for('static', filename='img/' + follow.user.image_file) }}">
-                    {{ follow.user.username }}
+                    <span class="btn">{{ follow.user.username }}</span>
                 </a>
             </td>
-            <td class="">
-                {{ moment(follow.timestamp).format('L') }}
+            <td class="w3-hide-small">
+                <p class="btn" >{{ moment(follow.timestamp).format('L') }}</p>
             </td>
             <td>
                 {% if current_user.can(Permission.FOLLOW) and follow.user != current_user %}
                     {% if not follow.user.has_role('Individual') %}
                         {% if not current_user.is_following(follow.user) %}
-                            <a href="{{ url_for('main.follow', username=follow.user.username) }}" class="btn btn-primary">Follow</a>
+                            <a href="{{ url_for('main.follow', username=follow.user.username) }}" class="m-0 btn btn-primary">Follow</a>
                         {% else %}
                             <a href="{{ url_for('main.unfollow', username=follow.user.username) }}" class="btn btn-default">Unfollow</a>
-                        {% endif %}   
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             </td>
-        </tr>
         {% endif %}
+        </tr>
     {% endfor %}
+    </tbody>
 </table>
-<div class="pagination">
     {{ macros.pagination_widget(pagination, endpoint, username = user.username) }}
-</div>
+
 {% endblock user %}

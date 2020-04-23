@@ -14,5 +14,5 @@
         <p class="lead">{{ post.content }}</p>
     </div>
     {% endfor %}
-    {{ macros.pagination_widget(posts, 'posts.userPosts', username=user.username) }}
+    {{ macros.pagination_widget(posts, 'posts.user_posts', username=user.username) }}
 {% endblock user %}

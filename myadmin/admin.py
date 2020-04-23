@@ -95,7 +95,7 @@ def adminModerator():
     page = request.args.get('page', 1, type=int)
     user_table=User.query.order_by(User.id).paginate(per_page=4, page=page)
 
-    return render_template('myadmin/user_roles.html', active_sch='active', users=users, columns=columns, user_table=user_table)
+    return render_template('myadmin/user_roles.html', active_mod='active', users=users, columns=columns, user_table=user_table)
 
 @myadmin.route('/myadmin/scholar')
 @login_required

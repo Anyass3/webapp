@@ -29,7 +29,7 @@
         {% endif %}
         <p class="display-6">{{ current_user.email }}</p>
         <p><small class="lead"><a href="{{ url_for('users.request_change_email') }}">Change Email</a></small></p></p>
-        <p><small class="lead"></small><a class="lead" href="{{ url_for('posts.userPosts', username=current_user.username) }}">My Posts</a></small></p></p>
+        <p><small class="lead"></small><a class="lead" href="{{ url_for('posts.user_posts', username=current_user.username) }}">My Posts</a></small></p></p>
       </div>
     </div>
   </div>

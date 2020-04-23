@@ -15,11 +15,11 @@
       <div class="">
           <div class="column">
             <p style="font-size: 110%;">
-              <a href="{{ url_for('posts.userPosts', username=post.author.username) }}">
+              <a href="{{ url_for('posts.user_posts', username=post.author.username) }}">
                 <img class="w3-circle" style="width:10%;" src="{{ url_for('static', filename='img/' + post.author.image_file) }}" alt="profile">
                 <span class="lead" >{{ post.author.username }}</span>
               </a>
-              <small class="lead">{{ moment(post.date_posted).fromNow(refresh=True) }}</small>
+              <small class="text-muted">{{ moment(post.date_posted).fromNow(refresh=True) }}</small>
             </p>
             {% if post.author == current_user %}
                 <div class="row w3-center">
@@ -29,7 +29,7 @@
             {% endif %}
           </div>
           <div class="">
-            <h4 class="text-capitalize">{{ post.title }}</h4>
+            <h4 class="text-capitalize" style="color: dodgerblue;">{{ post.title }}</h4>
             {% if post.img_file %}
             <img id="image" class="image-fluid figure-img" style="width: 70%;" src="{{ url_for('static', filename='img/' + post.img_file )}}" alt="image">
             {% endif %}

@@ -129,15 +129,15 @@
             <div class="col-12 col-sm-6 card" >
                 <div class="row">
                   <p>
-                    <a class="" href="{{ url_for('posts.userPosts', username=post.author.username) }}">
+                    <a class="" href="{{ url_for('posts.user_posts', username=post.author.username) }}">
                         <img class="w3-circle " style="width:10%;" src="{{ url_for('static', filename='img/' + post.author.image_file) }}" alt="profile">
-                        <span class="lead">{{ post.author.username }}</span>
+                        <span class="lead btn">{{ post.author.username }}</span>
                     </a>
-                  <small>{{ moment(post.date_posted).fromNow(refresh=True) }}</small>
+                  <small class="text-muted">{{ moment(post.date_posted).fromNow(refresh=True) }}</small>
                   </p>
                 </div>
                 <div class="text-center">
-                  <h4 class="text-capitalize"><a href="{{ url_for('posts.VPost', post_id=post.id) }}">{{ post.title }}</a></h4>
+                  <h4 class="text-capitalize"><a class="btn" href="{{ url_for('posts.VPost', post_id=post.id) }}" style="color: dodgerblue;">{{ post.title }}</a></h4>
                   {% if post.img_file %}
                   <img id="image" style="width:80%;" class="image-fluid figure-img w3-display-container w3-hover-opacity" src="{{ url_for('static', filename='img/' + post.img_file )}}" alt="image">
                   {% endif %}

@@ -28,68 +28,185 @@
         <!--  nav starting -->
         <nav class="w3-container w-100 navbar m-auto navbar-expand-md navbar-light bg-light sticky-top w3-card-4">
             <a class="navbar-brand" href="/">Unity</a>
-
+            {% if current_user.is_authenticated %}
+            <span class="d-md-none">
+                <a data-toggle="collapse" href="#notification" role="button" aria-expanded="false" aria-controls="notification">
+                    <i class="fa fa-bell-o">
+                        <sup style="margin-left: -10px;" class="badge badge-pill badge-danger">
+                            {% set ass=current_user.association.all() %}
+                            {% set fol=current_user.followers.all()  %}
+                            {% set u = ass|selectattr("notify")|list %}
+                            {% set u1 = fol|selectattr("notify")|list %}
+                            {{ current_user.temp_members.all()|count + u|count + u1|count}}
+                        </sup>
+                    </i>
+                </a>
+            </span>
+            <span class="ml-auto navbar-text d-md-none ">
+                <small class="text-muted">{{ current_user.role }} Account</small>
+            </span>
+            {% endif %}
             <button class="narbar-toggler d-md-none ml-auto" type="button" data-toggle="collapse" data-target='#navContent' aria-controls="navContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navContent">
-            <ul class="navbar-nav w3-hide-small">
-                <li class="nav-item mx-4">
-                    <a href="100.115.92.207:8000"><i class="fa fa-twitter"></i></a>
-                </li>
-                <li class="nav-item mx-4">
-                    <a href="#"><i class="fa fa-facebook-f"></i></a>
-                </li>
-                <li class="nav-item mx-4">
-                    <a href="#"><i class="fa fa-instagram"></i></a>
-                </li>
-            </ul>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                <a class="nav-link  {{ active_home }}" href="{{ url_for('main.home') }}">Home</a>
-                </li>
-                <li class="nav-item">
-                <a class="nav-link  {{ active_about }}" href="{{ url_for('main.about') }}">About</a>
-                </li>
+                <ul class="navbar-nav ">
+                    <li class="d-none d-md-block nav-item mx-4">
+                        <a href="100.115.92.207:8000"><i class="fa fa-twitter"></i></a>
+                    </li>
+                    <li class="d-none d-md-block nav-item mx-4">
+                        <a href="#"><i class="fa fa-facebook-f"></i></a>
+                    </li>
+                    <li class="d-none d-md-block nav-item mx-4">
+                        <a href="#"><i class="fa fa-instagram"></i></a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="d-none d-md-block nav-item mx-4">
+                        <a data-toggle="collapse" href="#notification" role="button" aria-expanded="false" aria-controls="notification">
+                            <i class="fa fa-bell-o">
+                                <sup style="margin-left: -6px;" class="badge badge-pill badge-danger">
+                                    {% set ass=current_user.association.all() %}
+                                    {% set fol=current_user.followers.all()  %}
+                                    {% set u = ass|selectattr("notify")|list %}
+                                    {% set u1 = fol|selectattr("notify")|list %}
+                                    {{ current_user.temp_members.all()|count + u|count + u1|count}}
+                                </sup>
+                            </i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                
                 {% if current_user.is_authenticated %}
-                    {% if current_user.has_role('Association') %}
-                        <li class="nav-item">
-                            <a class="nav-link  {{ active_account }}" href="{{ url_for('users.account') }}">Account</a>
-                        </li>
-                    {% elif current_user.has_role('Scholar') %}
-                        <li class="nav-item">
-                            <a class="nav-link  {{ active_account }}" href="{{ url_for('users.accountScholar') }}">Account</a>
-                        </li>
-                    {% elif current_user.has_role('admin') %}
-                        <li class="nav-item">
-                            <a class="nav-link  {{ active_account }}" href="{{ url_for('myadmin.account') }}">Account</a>
-                        </li>
+                    <span class="ml-auto navbar-text d-none d-md-block">
+                        <small class="text-muted">{{ current_user.role }} Account</small>
+                    </span>
+                {% endif %}
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                    <a class="nav-link  {{ active_home }}" href="{{ url_for('main.home') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                    <a class="nav-link  {{ active_about }}" href="{{ url_for('main.about') }}">About</a>
+                    </li>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.has_role('Association') %}
+                            <li class="nav-item">
+                                <a class="nav-link  {{ active_account }}" href="{{ url_for('users.account') }}">Account</a>
+                            </li>
+                        {% elif current_user.has_role('Scholar') %}
+                            <li class="nav-item">
+                                <a class="nav-link  {{ active_account }}" href="{{ url_for('users.accountScholar') }}">Account</a>
+                            </li>
+                        {% elif current_user.has_role('admin') %}
+                            <li class="nav-item">
+                                <a class="nav-link  {{ active_account }}" href="{{ url_for('myadmin.account') }}">Account</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link  {{ active_account }}" href="{{ url_for('users.accountIndividual') }}">Account</a>
+                            </li>
+                        {% endif %}
+                        
+                        {% if  current_user.can(Permission.WRITE)%}
+                            <li class="nav-item">
+                                <a class="nav-link  {{ active_post }}" href="{{ url_for('posts.newPost') }}">New Post</a>
+                            </li>
+                        {% endif %}
+                    <li class="nav-item">
+                        <a class="nav-link {{ active_logout }}" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                    </li>
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link  {{ active_account }}" href="{{ url_for('users.accountIndividual') }}">Account</a>
+                        <a class="nav-link  {{ active_register }}" href="{{ url_for('users.register') }}">Register</a>
                         </li>
-                    {% endif %}
-                    
-                    {% if  current_user.can(Permission.WRITE)%}
                         <li class="nav-item">
-                            <a class="nav-link  {{ active_post }}" href="{{ url_for('posts.newPost') }}">New Post</a>
+                        <a class="nav-link  {{ active_login }}" href="{{ url_for('users.login') }}">Login</a>
                         </li>
                     {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link btn {{ active_logout }}" data-toggle="modal" data-target="#logoutModal">Logout</a>
-                </li>
-                {% else %}
-                    <li class="nav-item">
-                    <a class="nav-link  {{ active_register }}" href="{{ url_for('users.register') }}">Register</a>
-                    </li>
-                    <li class="nav-item">
-                    <a class="nav-link  {{ active_login }}" href="{{ url_for('users.login') }}">Login</a>
-                    </li>
-                {% endif %}
-            </ul>
+                </ul>
             </div>
         </nav>
-        <p class="display-6 text-center lead" style="font-size: 110%;">Assalamu Alaikum Warahmatullahi Wabarakaatuhu</p>
+        
+        {% if current_user.is_authenticated %}
+        <div class="collapse w-100 col col-sm-12 col-md-8 col-lg-6 m-auto" id="notification">
+            {% set members=current_user.temp_members.all()|list %}
+            {% set ollowers=current_user.followers.all() %}
+            {% set ssociations=current_user.association.all() %}
+            {% set associations = current_user.association.all()|selectattr("notify")|list %}
+            {% set followers = current_user.followers.all()|selectattr("notify")|list %}
+            {% set notifies=members+associations+followers %}
+            <div class="card card-body m-auto">
+                
+                {% for user in notifies|sort(attribute="timestamp") %}
+                    {% if not current_user.has_role('Association') and user.association_id %}
+                    {% set username=User.query.filter_by(id=user.association_id).first().username %}
+                    <p>
+                        <a href="{{ url_for('main.unnotify', username=username) }}">{{ username }}</a> 
+                        {{ user.notify }}
+                        <span class="text-muted">{{ moment(user.timestamp).fromNow(refresh=True) }}</span>
+                    </p>
+                    {% elif user.temp_member_id %}
+                        {% set username=User.query.filter_by(id=user.temp_member_id).first().username %}
+                        <p>
+                            <a href="{{ url_for('main.temp_members') }}">{{ username }}</a> 
+                            {{ user.notify }}
+                            <span class="text-muted">{{ moment(user.timestamp).fromNow(refresh=True) }}</span>
+                        </p>
+                    {% endif %}
+                    {% if user.follower_id and not current_user.id == user.follower_id %}
+                        {% set username=User.query.filter_by(id=user.follower_id).first().username %}
+                        <p>
+                            <a href="{{ url_for('posts.user_posts', username=username) }}">{{ username }}</a> 
+                            {{ user.notify }}
+                            <span class="text-muted">{{ moment(user.timestamp).fromNow(refresh=True) }}</span>
+                        </p>
+                    {% endif %}
+
+                {% endfor %}
+                    
+                
+                {#
+                {% for association in associations %}
+                {% if association.notify %}
+                    {% set username=User.query.filter_by(id=association.association_id).first().username %}
+                    <p>
+                        <a href="{{ url_for('posts.user_posts', username=username) }}">{{ username }}</a> 
+                        {{ association.notify }}
+                        <span class="text-muted">{{ moment(association.timestamp).fromNow(refresh=True) }}</span>
+                    </p>
+                    {% endif %}
+                {% endfor %}
+                {% for member in members %}
+                {% if member.notify %}
+                    {% set username=User.query.filter_by(id=member.temp_member_id).first().username %}
+                    <p>
+                        <a href="{{ url_for('main.temp_members') }}">{{ username }}</a> 
+                        {{ member.notify }}
+                        <span class="text-muted">{{ moment(member.timestamp).fromNow(refresh=True) }}</span>
+                    </p>
+                {% endif %}
+                {% endfor %}
+                {% for follower in followers %}
+                {% if follower.notify %}
+                    {% if not current_user.id == follower.follower_id %}
+                        {% set username=User.query.filter_by(id=follower.follower_id).first().username %}
+                        <p>
+                            <a href="{{ url_for('posts.user_posts', username=username) }}">{{ username }}</a> 
+                            {{ follower.notify }}
+                            <span class="text-muted">{{ moment(follower.timestamp).fromNow(refresh=True) }}</span>
+                        </p>
+                    {% endif %}
+                {% endif %}
+                {% endfor %}
+                    #}
+                    
+            </div>
+        </div>
+        {% endif %}
+        <p class="display-6 text-center" style="font-size: 110%;">
+            <small>Assalamu Alaikum Warahmatullahi Wabarakaatuhu</small>
+        </p>
         <!--  nav ends -->
       
         {% with messages = get_flashed_messages(with_categories=true) %}

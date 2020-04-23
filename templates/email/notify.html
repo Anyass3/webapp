@@ -1,0 +1,35 @@
+{% extends 'email/e_layout.html' %}
+
+{% block email %}
+
+{% if not user.has_role('Association') %}
+<h3>Assalamu Alaikum {{ user.f_name + ' ' + user.l_name}}, </h3>
+{% else %}
+<h3>Assalamu Alaikum {{ user.or_name}}, </h3>
+{% endif %}
+    
+    
+    {% if accept %}
+    <h4>You have been accepted by {{ org.or_name }}({{ org.shorten }})</h4>
+    <p>To view your new association please click on the following link:</p>
+    <p><a href="{{ url_for ('main.unnotify', username=org.shorten, _external=True) }}">Click Me</a></p>
+    {% elif join %}
+    <h4>{{ member.f_name + ' ' + member.l_name}} has sent you a join request.</h4>
+    <p>To acccept the join request please click on the following link:</p>
+    <p><a href="{{ url_for ('main.unnotify', username=member.username, _external=True) }}">Click Me</a></p>
+    {% elif following %}
+    <h4>{{ follower.f_name + ' ' + follower.l_name }} has started following you</h4>
+    <p>To view your new follower please click on the following link:</p>
+    <p><a href="{{ url_for ('main.unnotify', username=follower.username, _external=True) }}">Click Me</a></p>
+    {% endif %}
+
+
+    {% if info %}
+        <p>{{ info }}</p>
+    {% endif %}
+        
+    <p>Sincerely,</p>
+    <p>WebsiteName</p>
+    <p>NOTE: replies to this email address are not monitored.</p>
+
+{% endblock email %}

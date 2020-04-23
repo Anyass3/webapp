@@ -7,18 +7,22 @@
   </style>
 {% endblock style %}
 
-
 {% block content %}
 
 <!--** Events ends**-->
-<div class="w3-container d-md-flex" style="background-color:gainsboro;">
-    <div class="container">
-        <div class="">
-            <a class="" href="{{ url_for('posts.userPosts', username=user.username) }}"><img class="w3-circle " style="width:10%;" src="{{ url_for('static', filename='img/' + user.image_file) }}" alt="profile"></a>
-            <span class="lead">
-                <p>{{ user.username }}</p>
-                {% if current_user != user %}<p>last seen: {{ moment(user.last_seen).fromNow(refresh=True) }}</p>{% endif %}  
-            </span>
+<div class="w3-container d-md-flex justify-content-sm-around" style="background-color:gainsboro;">
+    <div class="">
+        <div class="d-flex">
+            <div class="">
+                <a class="" href="{{ url_for('posts.user_posts', username=user.username) }}"><img class="w3-circle " style="width:25%;" src="{{ url_for('static', filename='img/' + user.image_file) }}" alt="profile"></a>
+                <span>
+                    <p class="lead">{{ user.username }}</p>
+                    {% if current_user != user %}<p class="text-muted">last seen: {{ moment(user.last_seen).fromNow(refresh=True) }}</p>{% endif %}  
+                </span>
+            </div>
+            <div class="text-muted text-capitalize ml-auto m-3 ">
+                {{ user.role }}
+            </div>
         </div>
         <div>
             {% if current_user.can(Permission.FOLLOW) and user != current_user %}
@@ -32,20 +36,65 @@
                     {% endif %}   
                 {% endif %}
             {% endif %}
-            <a href="{{ url_for('main.followers', username=user.username) }}">
-                Followers: <span class="badge">{{ user.followers.count() - 1 }}</span>
+            
+            {% if not user.has_role('Individual') %}
+            <a class="btn btn-default" href="{{ url_for('main.followers', username=user.username) }}">
+                Followers: <span class="badge badge-primary">{{ user.followers.count() - 1 }}</span>
             </a>
-            <a href="{{ url_for('main.followed', username=user.username) }}">
-                    Following: <span class="badge">{{ user.followed.count() - 1 }}</span>
+            {% endif %}
+            {% if user.has_role('Individual') %}
+            <a class="btn btn-default" href="{{ url_for('main.followed', username=user.username) }}">
+                Following: <span class="badge badge-primary">{{ user.followed.count() }}</span>
             </a>
+            {% else %}
+            <a class="btn btn-default" href="{{ url_for('main.followed', username=user.username) }}">
+                Following: <span class="badge badge-primary">{{ user.followed.count() - 1 }}</span>
+            </a>
+            {% endif %}
             {% if current_user.is_authenticated and user != current_user and
                     user.is_following(current_user) %}
                 | <span class="label label-default">Follows you</span>
             {% endif %}
+        </div>
+        <div class="mt-3">
+            {% if current_user.is_authenticated and not current_user.has_role('Association') and user != current_user and user.has_role('Association') %}
+                {% if not current_user.is_a_member(user) %}
+                    {% if current_user.temp_is_a_member(user) %}
+                    <span class="btn text-secondary">Join Request Sent</span>
+                    <a href="{{ url_for('main.cancel_join_request', shorten=user.shorten) }}"
+                        class="btn text-muted">Cancel Request</a>
+                    {% else %}
+                    <a href="{{ url_for('main.join_request', shorten=user.shorten) }}"
+                        class="btn btn-success">Join</a>
+                    {% endif %}
+                {% else %}
+                    <a href="{{ url_for('main.leave', shorten=user.shorten) }}"
+                        class="btn btn-default">Leave</a>
+                {% endif %}
+            {% elif current_user.has_role('Association') and user.has_role('Association') %}
+                <a href="{{ url_for('main.temp_members') }}"
+                    class="btn btn-default">
+                    Check Join Request: <span class="badge badge-primary">{{ user.temp_members.count() }}</span>
+                </a>
+            {% endif %}
+            
+            {% if user.has_role('Association') %}
+                <a class="btn btn-default" href="{{ url_for('main.members', shorten=user.shorten) }}">
+                    Members: <span class="badge badge-success">{{ user.members.count() }}</span>
+                </a>
+            {% else %}
+                <a class="btn btn-default" href="{{ url_for('main.associations', username=user.username) }}">
+                    Associations: <span class="badge badge-success">{{ user.association.count() }}</span>
+                </a>
+            {% endif %}
                 
+            {% if current_user.is_authenticated and user != current_user and
+                    user.is_a_member(current_user) %}
+                | <span class="label label-default">A member</span>
+            {% endif %}
         </div>
     </div>
-    <div class="jumbotron jumbotron-fliud" style="width: 100%;">
+    <div class="jumbotron jumbotron-fliud mt-3 w3-mobile" style="width: 75%;">
         
         {% block user %}
             

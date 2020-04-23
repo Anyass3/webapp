@@ -72,9 +72,19 @@ def deletePost(post_id):
     return redirect(url_for('main.home'))
 
 @posts.route('/user/<string:username>')
-def userPosts(username):
+def user_posts(username):
     page = request.args.get('page', 1, type=int)
     user = User.query.filter_by(username=username).first_or_404()
+    #deletes notify message
+    if current_user.is_authenticated:
+        u = current_user.association.filter_by(association_id=user.id).first()
+        if u and u.notify:
+            u.notify=''
+            db.session.commit()
+        u = user.followed.filter_by(followed_id=current_user.id).first()
+        if u and u.notify:
+            u.notify=''
+            db.session.commit()
     posts=Post.query.filter_by(author=user)\
         .order_by(Post.date_posted.desc())\
         .paginate(per_page=5, page=page)

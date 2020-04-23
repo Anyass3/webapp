@@ -15,7 +15,9 @@ def permission_required(permission):
 
 def admin_required(f):
     return permission_required(Permission.ADMIN)(f)
-    
+def able_to_join(f):
+    return permission_required(Permission.JOIN)(f)
+
 def role_required(role):
     def decorator(f):
         @wraps(f)

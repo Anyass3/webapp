@@ -47,7 +47,7 @@ def send_async_email(msg):
 
 def send_email(to, subject, templete, **kwargs):
     msg = Message(subject, sender='noreply@gmail.com', recipients=[to])
-    msg.body = render_template(templete + '.txt', **kwargs)
+    #msg.body = render_template(templete + '.txt', **kwargs)
     msg.html = render_template(templete + '.html', **kwargs)
     thr = Thread(target=send_async_email, args=[msg])
     print("thr")
