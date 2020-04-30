@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, Blueprint, abort
-#from hello import ShortenName
+#
 from webapp import db, bcrypt, login_manager
 from webapp.users.forms import AssociationForm, ScholarForm, IndividualForm ,LoginForm, UpdateAssociationForm, UpdateScholarForm, UpdateIndividualForm, RequestResetForm, ResetPasswordForm, ChangePasswordForm, ChangeEmailForm
 from webapp.models import User, Role, Post, Temp_user, Permission

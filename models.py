@@ -159,6 +159,11 @@ class Temp_Join(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     notify = db.Column(db.String)
 
+    #?further questions
+    why_join = db.Column(db.Text)
+    want_to_achieve = db.Column(db.Text)
+    willing_to_offer = db.Column(db.Text)
+
     def __init__(self, **kwargs):
         super(Temp_Join, self).__init__(**kwargs)
         self.notify = "has sent you a join request."
@@ -175,9 +180,14 @@ class Join(db.Model):
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     notify = db.Column(db.String)
 
+    #?further questions
+    why_join = db.Column(db.Text)
+    want_to_achieve = db.Column(db.Text)
+    willing_to_offer = db.Column(db.Text)
+
     def __init__(self, **kwargs):
         super(Join, self).__init__(**kwargs)
-        self.notify = "has just accepted your join request"
+        self.notify = "has accepted your join request"
     @staticmethod
     def reset():
         j=Join.query.all()
@@ -207,13 +217,16 @@ class User(db.Model, UserMixin):
 
     # User fields
     active = db.Column(db.Boolean(), default=True)
-
+    #! shorten => username
     or_name = db.Column(db.String(50), unique=True)
     shorten = db.Column(db.String(50))
     
     f_name = db.Column(db.String())
     l_name = db.Column(db.String())
     address = db.Column(db.String())
+    # futher details
+    #?dob = db.Column(db.Date)
+    #?gender = db.Column(db.String)
 
     # Relationships:
     ##posts
@@ -309,10 +322,10 @@ class User(db.Model, UserMixin):
                     db.session.commit()
 
     #todo > temp_join
-    def join(self, user):
+    def join(self, user, **kwargs):
         if user.has_role('Association'):
             if not self.is_a_member(user):
-                j = Join(member=self, association=user)
+                j = Join(member=self, association=user, **kwargs)
                 db.session.add(j)
                 self.follow(user)
     def leave(self, user):
@@ -332,10 +345,10 @@ class User(db.Model, UserMixin):
             return False
         return self.members.filter_by(member_id=user.id).first() is not None
 
-    def temp_join(self, user):
+    def temp_join(self, user, **kwargs):
         if user.has_role('Association'):
             if not self.temp_is_a_member(user):
-                j = Temp_Join(temp_member=self, temp_association=user)
+                j = Temp_Join(temp_member=self, temp_association=user, **kwargs)
                 print(j)
                 db.session.add(j)
                 self.follow(user)

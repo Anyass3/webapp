@@ -4,7 +4,7 @@ from PIL import Image
 from threading import Thread
 from flask import url_for, current_app, render_template
 from webapp import create_app, mail
-#from hello import ShortenName
+#
 from flask_mail import Message
 
 
@@ -47,7 +47,10 @@ def send_async_email(msg):
 
 def send_email(to, subject, templete, **kwargs):
     msg = Message(subject, sender='noreply@gmail.com', recipients=[to])
-    #msg.body = render_template(templete + '.txt', **kwargs)
+    try:
+        msg.body = render_template(templete + '.txt', **kwargs)
+    except:
+        pass
     msg.html = render_template(templete + '.html', **kwargs)
     thr = Thread(target=send_async_email, args=[msg])
     print("thr")

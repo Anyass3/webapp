@@ -5,7 +5,7 @@
     {% for post in posts.items %}
     <div class="w3-border-top" style="background-color: transparent;">
         <h4>
-            <a class="text-capitalize" style="color: dodgerblue;" href="{{ url_for('posts.VPost', post_id=post.id) }}">{{ post.title }}</a>
+            <a class="text-capitalize" style="color: dodgerblue;" href="{{ url_for('posts.VPost', post_id=post.id, role=post.author.role) }}">{{ post.title }}</a>
             <small class="" style="color: darkgrey;">{{ moment(post.date_posted).fromNow(refresh=True) }}</small>
         </h4>
         {% if post.img_file %}

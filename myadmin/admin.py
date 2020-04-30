@@ -1,7 +1,7 @@
 from datetime import timedelta, datetime
 import secrets
 from flask import Flask, current_app, render_template, url_for, flash, redirect, request, Blueprint, abort, session
-#from hello import ShortenName
+#
 from webapp import db, bcrypt
 from webapp.myadmin.forms import adm_form ,LoginForm, UpdateAdmForm, RequestResetForm, ResetPasswordForm, codeForm, EditUser
 from webapp.models import User, Role, Post, Temp_user, Permission

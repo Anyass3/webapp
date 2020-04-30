@@ -10,6 +10,7 @@
         <th scope="col"><span class="btn">User</span></th>
         <th class="w3-hide-small" scope="col"><span class="btn">Since</span></th>
         <th scope="col"><span class="btn">Role</span></th>
+        <th scope="col"><span class="btn">Review</span></th>
     </thead>
     <tbody>
     {% for temp_member in temp_joins %}
@@ -18,16 +19,20 @@
             <td>
                 <a href="{{ url_for('posts.user_posts', username = temp_member.user.username) }}">
                     <img class="img-fluid w3-circle" style="width:10%;" src="{{ url_for('static', filename='img/' + temp_member.user.image_file) }}">
-                    <span class="btn">{{ temp_member.user.username }}</span>
+                    <span class="btn btn-link">{{ temp_member.user.username }}</span>
                 </a>
             </td>
             <td class="w3-hide-small">
                 <p class="btn" >{{ moment(temp_member.timestamp).format('L') }}</p>
             </td>
             <td>
-                <span>{{ temp_member.user.role }}</span>
+                <span class="btn">{{ temp_member.user.role }}</span>
             </td>
-            <td><a href="{{ url_for('main.accept', username = temp_member.user.username) }}">Accept</a></td>
+            <td>
+                <a class="btn btn-link" href="{{ url_for('main.review', username = temp_member.user.username) }}">
+                  review  <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                </a>
+            </td>
         {% endif %}
         </tr>
     {% endfor %}

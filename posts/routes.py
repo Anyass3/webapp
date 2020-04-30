@@ -1,5 +1,5 @@
 from flask import Flask, render_template, url_for, flash, redirect, request, abort, Blueprint
-#from hello import ShortenName
+#
 from webapp import db
 from webapp.posts.forms import PostForm
 from webapp.models import User, Role, Post, Permission
@@ -54,7 +54,7 @@ def updatePost(post_id):
         post.content=form.content.data
         db.session.commit()
         flash('Your post has been updated!', 'success')
-        return redirect(url_for('posts.VPost', post_id=post.id))
+        return redirect(url_for('posts.VPost', post_id=post.id, role=post.author.role))
     elif request.method == 'GET':
         form.title.data=post.title
         form.content.data=post.content
@@ -77,10 +77,11 @@ def user_posts(username):
     user = User.query.filter_by(username=username).first_or_404()
     #deletes notify message
     if current_user.is_authenticated:
-        u = current_user.association.filter_by(association_id=user.id).first()
-        if u and u.notify:
-            u.notify=''
-            db.session.commit()
+        if user.has_role('Association'):
+            u = current_user.association.filter_by(association_id=user.id).first()
+            if u and u.notify:
+                u.notify=''
+                db.session.commit()
         u = user.followed.filter_by(followed_id=current_user.id).first()
         if u and u.notify:
             u.notify=''

@@ -89,8 +89,17 @@
             {% endif %}
                 
             {% if current_user.is_authenticated and user != current_user and
-                    user.is_a_member(current_user) %}
-                | <span class="label label-default">A member</span>
+                user.is_a_member(current_user) %}
+            | <span class="label label-default">A Member</span>
+            <a class="btn" href="{{ url_for('main.view_member', username = user.username) }}">
+                view  <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+            </a>
+            {% elif current_user.is_authenticated and user != current_user and
+                    user.temp_is_a_member(current_user) %}
+                | <span class="label label-info">Membership Pending</span>
+                <a class="btn" href="{{ url_for('main.review', username = user.username) }}">
+                    review  <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                </a>
             {% endif %}
         </div>
     </div>
