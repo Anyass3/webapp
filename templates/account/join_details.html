@@ -1,0 +1,76 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<div class="my-5 w-100 h-100" style="background-color: gainsboro;">
+    <div class="contianer m-auto col-md-5 col-lg-4 w3-mobile card jumbotron jumbotron-fliud">
+        {% if heading %}
+        <h1 class="my-2 w-100 lead w3-center" style="font-size: 110%;">{{ heading }}</h1>
+        {% endif %}
+        <form novalidate method="POST" class="w3-mobile m-auto py-md-3 w-100 row">
+            {{ form.csrf_token }}
+            <div class="flex-inline-display form-group">
+              <div class=" mt-2 ">
+                {{ form.why_join.label(class="form-control-label") }}
+                {% if form.why_join.errors %}
+                  {{ form.why_join(class='form-control form-control-lg is-invalid', style="background:transparent") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.why_join.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                  {% else %}
+                    {{ form.why_join(class="form-control form-control-lg ", style="background:transparent") }}
+                {% endif %}
+              </div>
+            
+              <div class=" mt-2 ">
+                {{ form.want_to_achieve.label(class="form-control-label") }}
+                {% if form.want_to_achieve.errors %}
+                  {{ form.want_to_achieve(class='form-control form-control-lg is-invalid', style="background:transparent") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.want_to_achieve.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                  {% else %}
+                    {{ form.want_to_achieve(class="form-control form-control-lg ", style="background:transparent") }}
+                {% endif %}
+              </div>
+            
+              <div class=" mt-2 ">
+                {{ form.willing_to_offer.label(class="form-control-label") }}
+                {% if form.willing_to_offer.errors %}
+                  {{ form.willing_to_offer(class='form-control form-control-lg is-invalid', style="background:transparent") }}
+                  <div class="invalid-feedback">
+                    {% for error in form.willing_to_offer.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                  {% else %}
+                    {{ form.willing_to_offer(class="form-control form-control-lg ", style="background:transparent") }}
+                {% endif %}
+              </div>
+              <div class="form-check mt-2" style="float: left;">
+                {% set declare='HEREBY DECLARE THAT THE ABOVE STATED INFORMATION IS TRUE AND COMPLETE AND ANY FALSE INFORMATION MIGHT RESULT TO MY COMPLETE REMOVAL FROM THE ASSOCIATION.' %}
+                {% if form.declare.errors %}
+                  {{ form.declare(class='form-check-input is-invalid') }} 
+                  <label class="form-check-label">I<span class="lead">{{name}}</span>{{ declare }}</label>
+                  <div class="invalid-feedback">
+                    {% for error in form.declare.errors %}
+                      <span>{{ error }}</span>
+                    {% endfor %}
+                  </div>
+                  {% else %}
+                {{ form.declare(class="form-check-input") }}
+                <label class="form-check-label">I<span class="lead">{{name}}</span>{{ declare }}</label>
+                {% endif %}
+              </div>
+              <div class=" mt-2  float-right">
+                {{ form.submit(class="btn btn-outline-info") }}
+              </div>
+            </div>
+        </form>
+    </div>
+    </div>
+{% endblock content %}

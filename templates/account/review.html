@@ -1,0 +1,85 @@
+{% extends 'user_layout.html' %}
+
+
+{% block user %}
+<div class="page-header">
+    <h4>The application details of {{ user.username }}</h4>
+</div>
+<div>
+    <div class="jumbotron">
+        <h4 class="lead m-auto">Personal Details:</h4>
+        <div class="mt-3">
+            <p>Name: {{ user.f_name }} {{ user.l_name }}</p>
+            <p>Gender: N/A</p>
+            <p>Address: {{ user.address }}</p>
+            <p>Contact: {{ user.phone }}</p>
+            <p>Email: {{ user.email }}</p>
+            <p>Date of Birth: N/A</p>
+        </div>
+    </div>
+    <div>
+        <h4 class="lead m-auto">Additional Details</h4>
+        <div id="accordion" style="background-color: transparent !important;">
+            <div class="card" style="background-color: transparent !important;">
+              <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                  <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    WHY DO YOU WANT TO JOIN THE ASSOCIATION?
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                  <div class="card-body">
+                      {{ member.why_join }}
+                  </div>    
+              </div>
+            </div>
+            <div class="card" style="background-color: transparent !important;">
+              <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                    WHAT DO YOU WANT TO ACHIEVE IN THE ASSOCIATION?
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                    {{ member.want_to_achieve }}
+                </div>    
+              </div>
+            </div>
+            <div class="card" style="background-color: transparent !important;">
+              <div class="card-header" id="headingThree">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                    WHAT ARE YOU WILLING TO OFFER IF YOU HAPPEN TO BE ONE OF OUR MEMBERS?
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                <div class="card-body">
+                    {{ member.willing_to_offer }}
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="my-3">
+          {% set declare='I {} {} HEREBY DECLARE THAT THE ABOVE STATED INFORMATION IS TRUE AND COMPLETE AND ANY FALSE INFORMATION MIGHT RESULT TO MY COMPLETE REMOVAL FROM THE ASSOCIATION.'.format(user.f_name, user.l_name) %}
+          <p class="font-weight-light">{{ declare }}</p>
+        </div>
+    </div>
+    
+    {% if current_user.temp_is_association_for(user) %}
+    <div>
+        <button type="button" class="btn btn-primary btn-sm">
+            <a href="{{ url_for('main.accept', username = user.username) }}">Accept</a>
+        </button>
+        <button type="button" class="btn btn-danger btn-sm">
+            <a href="{{ url_for('main.reject', username = user.username) }}">Reject</a>
+        </button>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock user %}
